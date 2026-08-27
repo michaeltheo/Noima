@@ -31,7 +31,7 @@ export const StudioGallery: React.FC<{ shots: Shot[] }> = ({ shots }) => {
               type="button"
               aria-label={`View ${lead.alt}`}
               onClick={() => setOpenIndex(0)}
-              className={cn(frame, 'aspect-4/3 md:aspect-[16/7]')}
+              className={cn(frame, 'aspect-4/3 md:aspect-16/7')}
             >
               <StudioImage
                 src={lead.src}

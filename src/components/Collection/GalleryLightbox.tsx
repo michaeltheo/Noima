@@ -77,7 +77,7 @@ export const GalleryLightbox: React.FC<{
       </OverlayClose>
 
       {index !== null && (
-        <span className="absolute bottom-[30px] left-1/2 -translate-x-1/2 text-nav tracking-[0.1em] text-cream/70">
+        <span className="absolute bottom-7.5 left-1/2 -translate-x-1/2 text-nav tracking-widest text-cream/70">
           {index + 1} / {items.length}
         </span>
       )}

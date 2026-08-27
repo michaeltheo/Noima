@@ -42,7 +42,7 @@ export const VideoDuration: React.FC<{ src: string }> = ({ src }) => {
   return (
     <span ref={probe} className="contents">
       {label && (
-        <span className="absolute right-3 bottom-3 z-20 rounded-[4px] bg-[#241f1a]/70 px-2.5 py-0.5 text-[0.75rem] tracking-[0.05em] text-cream">
+        <span className="absolute right-3 bottom-3 z-20 rounded-sm bg-[#241f1a]/70 px-2.5 py-0.5 text-[0.75rem] tracking-wider text-cream">
           {label}
         </span>
       )}

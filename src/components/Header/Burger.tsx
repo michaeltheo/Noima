@@ -24,7 +24,7 @@ export const Burger: React.FC<{
     <span
       className={cn(
         'block h-[1.5px] w-6 bg-espresso transition-transform duration-400 ease-noima',
-        open && '-translate-y-[3.25px] -rotate-45',
+        open && 'translate-y-[-3.25px] -rotate-45',
       )}
     />
   </button>

@@ -16,8 +16,8 @@ export const Container: React.FC<{
     className={cn(
       'mx-auto w-full',
       size === 'page'
-        ? 'max-w-(--container-page) px-[clamp(28px,7vw,120px)]'
-        : 'max-w-(--container-site) px-[clamp(24px,5vw,72px)]',
+        ? 'max-w-page px-[clamp(28px,7vw,120px)]'
+        : 'max-w-site px-[clamp(24px,5vw,72px)]',
       className,
     )}
   >

@@ -35,12 +35,17 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # Run as separate steps rather than `pnpm check` so a failure names the
-      # stage that broke instead of collapsing all three into one red X.
+      # stage that broke instead of collapsing them all into one red X.
       - name: Format check
         run: pnpm run format:check
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm run lint:js
+
+      # Tailwind's own canonical-class check - the `suggestCanonicalClasses`
+      # diagnostic that otherwise only ever appears in the editor.
+      - name: Lint Tailwind classes
+        run: pnpm run lint:tailwind
 
       - name: Typecheck
         run: pnpm run typecheck

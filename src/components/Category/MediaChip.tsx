@@ -6,8 +6,8 @@ export const MediaChip: React.FC<{
   count: number
   label: string
 }> = ({ icon, count, label }) => (
-  <span className="inline-flex items-center gap-1.5 text-[0.75rem] tracking-[0.05em] text-espresso-soft">
-    <span className="size-[15px] flex-none text-clay-deep">{icon}</span>
+  <span className="inline-flex items-center gap-1.5 text-[0.75rem] tracking-wider text-espresso-soft">
+    <span className="size-3.75 flex-none text-clay-deep">{icon}</span>
     {count} {label}
   </span>
 )

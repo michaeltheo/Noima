@@ -55,9 +55,9 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ navItems, cta, mobil
           )}
         />
 
-        <div className="relative mx-auto flex h-header-sm w-full max-w-(--container-site) items-center justify-between px-[clamp(24px,5vw,72px)] md:h-header">
+        <div className="relative mx-auto flex h-header-sm w-full max-w-site items-center justify-between px-[clamp(24px,5vw,72px)] md:h-header">
           <Link href="/" aria-label={`${siteConfig.name} — home`} className="relative z-50">
-            <Logo priority className="h-[30px] md:h-[38px]" />
+            <Logo priority className="h-7.5 md:h-9.5" />
           </Link>
 
           <DesktopNav items={navItems} cta={cta} pathname={pathname} />
