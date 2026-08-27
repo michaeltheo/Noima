@@ -84,6 +84,12 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # `next build` runs as NODE_ENV=production, and the Postgres adapter only
+      # pushes the schema outside production - so the build would query tables
+      # that the empty CI database does not have yet.
+      - name: Push database schema
+        run: pnpm run db:push
+
       - name: Build
         run: pnpm run build
 
