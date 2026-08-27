@@ -1,19 +1,23 @@
 /**
- * Processes media resource URL to ensure proper formatting
- * @param url The original URL from the resource
- * @param cacheTag Optional cache tag to append to the URL
- * @returns Properly formatted URL with cache tag if provided
+ * Turns a Payload media URL into one Next can optimise.
  *
- * Local paths (e.g. `/api/media/file/image.webp`) are kept relative so
- * Next.js image optimization treats them as local rather than fetching
- * through `remotePatterns`, which blocks private IPs since Next.js 16.
+ * Payload stores `url` as `/api/media/file/<name>`, a dynamic route it serves
+ * itself. The same files are also written to `public/media` (Media.staticDir),
+ * so we rewrite to `/media/<name>`: Next serves that as a static asset and its
+ * image optimiser can read it directly, which is both faster and — unlike the
+ * API route — reliably optimised.
+ *
+ * `cacheTag` is deliberately NOT applied to images. A query string cannot be
+ * matched by `images.localPatterns` (its `search` accepts only a literal), so
+ * Next refuses to optimise such URLs. Pass it only for media that bypasses the
+ * optimiser, such as a <video> source.
  */
 export const getMediaUrl = (url: string | null | undefined, cacheTag?: string | null): string => {
   if (!url) return ''
 
-  if (cacheTag && cacheTag !== '') {
-    cacheTag = encodeURIComponent(cacheTag)
-  }
+  const staticUrl = url.startsWith('/api/media/file/')
+    ? `/media/${url.slice('/api/media/file/'.length)}`
+    : url
 
-  return cacheTag ? `${url}?${cacheTag}` : url
+  return cacheTag ? `${staticUrl}?${encodeURIComponent(cacheTag)}` : staticUrl
 }

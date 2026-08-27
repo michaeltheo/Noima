@@ -3,8 +3,9 @@
 import type { Shot } from '@/config/studio'
 
 import { Overlay, OverlayClose } from '@/components/primitives/Overlay'
-import Image from 'next/image'
 import React, { useEffect } from 'react'
+
+import { StudioImage } from './StudioImage'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 
@@ -53,10 +54,9 @@ export const Lightbox: React.FC<{
 
       {shot && (
         <div className="relative h-[86vh] w-[90vw]">
-          <Image
+          <StudioImage
             src={shot.src}
             alt={shot.alt}
-            fill
             sizes="90vw"
             className="rounded-[4px] object-contain"
           />

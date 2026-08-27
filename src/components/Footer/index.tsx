@@ -1,5 +1,6 @@
 import { Container } from '@/components/primitives/Container'
 import { Logo } from '@/components/Logo'
+import { Reveal } from '@/components/primitives/Reveal'
 import { siteConfig } from '@/config/site'
 import { getNavigation } from '@/data/navigation'
 import Link from 'next/link'
@@ -14,14 +15,17 @@ export async function Footer() {
   return (
     <footer className="mt-auto bg-espresso pt-lg pb-md text-cream">
       <Container>
-        <div className="flex flex-wrap items-center justify-between gap-md">
+        <Reveal className="flex flex-wrap items-center justify-between gap-md">
           <Link href="/" aria-label={`${siteConfig.name} — home`}>
             <Logo variant="cream" className="text-[1.25rem]" />
           </Link>
           <FooterNav items={footerItems} instagram={siteConfig.instagram} />
-        </div>
+        </Reveal>
 
-        <div className="mt-md flex flex-wrap justify-between gap-sm border-t border-cream/12 pt-sm text-meta text-cream/45">
+        <Reveal
+          delay={0.08}
+          className="mt-md flex flex-wrap justify-between gap-sm border-t border-cream/12 pt-sm text-meta text-cream/45"
+        >
           <span>
             &copy; {year} {siteConfig.name} &middot; {siteConfig.city}
           </span>
@@ -36,7 +40,7 @@ export async function Footer() {
               {siteConfig.credit.label}
             </a>
           </span>
-        </div>
+        </Reveal>
       </Container>
     </footer>
   )

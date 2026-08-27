@@ -33,7 +33,7 @@ export const CollectionCard: React.FC<{
           resource={collection.cover}
           fill
           size="(max-width: 560px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          imgClassName="object-cover transition-transform duration-1000 ease-noima group-hover:scale-105 motion-reduce:transform-none"
+          imgClassName="object-cover group-hover:scale-105 motion-reduce:transform-none"
         />
       )}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(58,51,44,0.34),transparent_46%)]" />

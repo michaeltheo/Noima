@@ -1,17 +1,18 @@
 import type { Metadata } from 'next'
 
-import { Gallery } from '@/components/Collection/Gallery'
-import { GalleryFilter, type GalleryType } from '@/components/Collection/GalleryFilter'
+import { GalleryHeader } from '@/components/Collection/GalleryHeader'
+import { GalleryMasonry } from '@/components/Collection/GalleryMasonry'
 import { Container } from '@/components/primitives/Container'
-import { PageHeader } from '@/components/primitives/PageHeader'
 import { Reveal } from '@/components/primitives/Reveal'
 import RichText from '@/components/RichText'
 import { siteConfig } from '@/config/site'
 import { getCategories, getCollectionBySlug } from '@/data/categories'
-import { galleryCounts } from '@/data/collectionSummary'
+import { galleryCounts, galleryItems } from '@/data/collectionSummary'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { notFound } from 'next/navigation'
 import React from 'react'
+
+type GalleryType = 'photos' | 'videos'
 
 type Args = {
   params: Promise<{ category: string; collection: string }>
@@ -29,12 +30,17 @@ export async function generateStaticParams() {
   )
 }
 
-/** A bare URL opens on photos, unless the collection only has video. */
+/** A bare URL opens on photos, unless the album only holds video. */
 const resolveType = (value: string | undefined, photos: number): GalleryType => {
   if (value === 'videos') return 'videos'
   if (value === 'photos') return 'photos'
   return photos > 0 ? 'photos' : 'videos'
 }
+
+const countLabel = (n: number, type: GalleryType) =>
+  type === 'videos'
+    ? `${n} ${n === 1 ? 'film' : 'films'}`
+    : `${n} ${n === 1 ? 'photograph' : 'photographs'}`
 
 export default async function CollectionPage({ params, searchParams }: Args) {
   const { category: categorySlug, collection: collectionSlug } = await params
@@ -50,39 +56,30 @@ export default async function CollectionPage({ params, searchParams }: Args) {
   const { category, collection } = result
   const counts = galleryCounts(collection)
   const type = resolveType(typeParam, counts.photos)
-  const basePath = `/${category.slug}/${collection.slug}`
+  const items = galleryItems(collection, type)
 
   return (
     <main>
-      <PageHeader
+      <GalleryHeader
         crumbs={[
           { label: siteConfig.name, href: '/' },
           { label: category.title, href: `/${category.slug}` },
           { label: collection.title },
         ]}
         title={collection.title}
-        lead={collection.shortDescription}
-        aside={`${String(type === 'videos' ? counts.videos : counts.photos).padStart(2, '0')} ${
-          type === 'videos' ? 'Videos' : 'Photos'
-        }`}
-      >
-        <GalleryFilter
-          basePath={basePath}
-          active={type}
-          photos={counts.photos}
-          videos={counts.videos}
-        />
-      </PageHeader>
+        subtitle={countLabel(items.length, type)}
+        backHref={`/${category.slug}`}
+      />
 
       {collection.body && (
-        <Container size="page">
-          <Reveal className="mb-xl max-w-[62ch]">
+        <Container>
+          <Reveal className="max-w-[62ch]">
             <RichText data={collection.body} />
           </Reveal>
         </Container>
       )}
 
-      <Gallery items={collection.gallery} type={type} />
+      <GalleryMasonry items={items} />
     </main>
   )
 }
@@ -103,12 +100,10 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   return {
     title,
     description,
-    openGraph: {
-      ...mergeOpenGraph({
-        title,
-        description,
-        url: `/${category.slug}/${collection.slug}`,
-      }),
-    },
+    openGraph: mergeOpenGraph({
+      title,
+      description,
+      url: `/${category.slug}/${collection.slug}`,
+    }),
   }
 }

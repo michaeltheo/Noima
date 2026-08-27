@@ -2,7 +2,7 @@ import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import React from 'react'
 
-export type CtaVariant = 'outline' | 'solid' | 'ghost'
+type CtaVariant = 'outline' | 'solid' | 'ghost'
 
 const base =
   'inline-flex items-center gap-3 whitespace-nowrap rounded-[2px] border px-[34px] py-[18px] text-btn uppercase transition-colors duration-500 ease-noima'

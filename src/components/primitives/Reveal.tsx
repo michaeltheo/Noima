@@ -12,11 +12,12 @@ type RevealProps = {
 }
 
 /**
- * Fades and lifts its children into place the first time they scroll into view.
+ * Settles its children into place the first time they scroll into view: a lift,
+ * a fade and a touch of defocus resolving together.
  *
  * The observer is attached from a ref callback rather than an effect so it is
- * wired up the moment the node exists. Under `prefers-reduced-motion` the
- * transition is dropped in CSS, so the element still appears — just instantly.
+ * wired up the moment the node exists. Under `prefers-reduced-motion` the whole
+ * transition is dropped and the content is simply present.
  */
 export const Reveal: React.FC<RevealProps> = ({
   children,
@@ -52,8 +53,9 @@ export const Reveal: React.FC<RevealProps> = ({
     <Tag
       ref={observe}
       className={cn(
-        'transition-[opacity,transform] duration-1000 ease-noima motion-reduce:transition-none',
-        visible ? 'translate-y-0 opacity-100' : 'translate-y-7 opacity-0',
+        'transition-[opacity,transform,filter] duration-1000 ease-noima',
+        visible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-6 opacity-0 blur-[3px]',
+        'motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:blur-0 motion-reduce:transition-none',
         className,
       )}
       style={{ transitionDelay: `${delay}s` }}

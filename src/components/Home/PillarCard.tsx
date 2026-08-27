@@ -23,7 +23,7 @@ export const PillarCard: React.FC<{
             resource={category.heroImage}
             fill
             size="(max-width: 860px) 100vw, 33vw"
-            imgClassName="object-cover transition-transform duration-1000 ease-noima group-hover:scale-[1.03]"
+            imgClassName="object-cover group-hover:scale-[1.03]"
             videoClassName="h-full w-full object-cover"
           />
         )}

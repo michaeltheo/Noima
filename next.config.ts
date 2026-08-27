@@ -19,10 +19,16 @@ const nextConfig: NextConfig = {
   images: {
     localPatterns: [
       {
-        pathname: '/api/media/file/**',
+        // Uploads are served straight from `public/media` (Media.staticDir), not
+        // through Payload's dynamic `/api/media/file` route — see `getMediaUrl`.
+        //
+        // No `search` entry: image URLs must stay query-free. `LocalPattern.search`
+        // only accepts a literal string, so a per-document `?updatedAt` cache tag
+        // could never match, and Next then serves the original UNOPTIMISED.
+        pathname: '/media/**',
       },
     ],
-    qualities: [100],
+    qualities: [75, 82],
     remotePatterns: [
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
         const url = new URL(item)

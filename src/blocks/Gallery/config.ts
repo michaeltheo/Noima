@@ -14,7 +14,7 @@ const caption = {
   admin: { description: 'Optional line shown beneath this group.' },
 }
 
-export const GalleryImageBlock: Block = {
+const GalleryImageBlock: Block = {
   slug: 'galleryImage',
   interfaceName: 'GalleryImageBlock',
   labels: { singular: 'Images', plural: 'Image groups' },
@@ -65,7 +65,7 @@ export const GalleryImageBlock: Block = {
   ],
 }
 
-export const GalleryVideoBlock: Block = {
+const GalleryVideoBlock: Block = {
   slug: 'galleryVideo',
   interfaceName: 'GalleryVideoBlock',
   labels: { singular: 'Video', plural: 'Videos' },
