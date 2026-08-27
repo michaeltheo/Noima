@@ -8,5 +8,9 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     include: ['tests/int/**/*.int.spec.ts'],
+    // Payload's first getPayload() connects to Postgres and pushes the schema,
+    // which comfortably exceeds vitest's 10s defaults on a cold CI database.
+    hookTimeout: 120_000,
+    testTimeout: 60_000,
   },
 })

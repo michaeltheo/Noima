@@ -28,8 +28,14 @@ export const ThemeSelector: React.FC = () => {
     }
   }
 
+  // Deliberately read localStorage *after* hydration rather than in a lazy
+  // useState initializer: the server has no localStorage, so seeding the value
+  // during render would make the first client render disagree with the server
+  // HTML and produce a hydration mismatch. The one extra render is the cost of
+  // rendering a browser-only preference correctly.
   React.useEffect(() => {
     const preference = window.localStorage.getItem(themeLocalStorageKey)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setValue(preference ?? 'auto')
   }, [])
 

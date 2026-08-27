@@ -24,7 +24,11 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
+  // Mirrors the context value into local state on purpose - see the note on
+  // `theme` above. Rendering `headerTheme` directly would change the server
+  // markup and trip hydration, so the sync is deferred to an effect.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headerTheme])

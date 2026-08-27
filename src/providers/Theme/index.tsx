@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useCallback, use, useEffect, useState } from 'react'
+import React, { createContext, useCallback, use, useState } from 'react'
 
 import type { Theme, ThemeContextType } from './types'
 
@@ -16,9 +16,15 @@ const initialContext: ThemeContextType = {
 const ThemeContext = createContext(initialContext)
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setThemeState] = useState<Theme | undefined>(
-    canUseDOM ? (document.documentElement.getAttribute('data-theme') as Theme) : undefined,
-  )
+  // <InitTheme /> runs with strategy="beforeInteractive", so by the time this
+  // component renders on the client the resolved preference is already stamped
+  // on <html data-theme>. Read it back rather than recomputing it in an effect.
+  const [theme, setThemeState] = useState<Theme | undefined>(() => {
+    if (!canUseDOM) return undefined
+
+    const initial = document.documentElement.getAttribute('data-theme')
+    return themeIsValid(initial) ? initial : defaultTheme
+  })
 
   const setTheme = useCallback((themeToSet: Theme | null) => {
     if (themeToSet === null) {
@@ -31,24 +37,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       window.localStorage.setItem(themeLocalStorageKey, themeToSet)
       document.documentElement.setAttribute('data-theme', themeToSet)
     }
-  }, [])
-
-  useEffect(() => {
-    let themeToSet: Theme = defaultTheme
-    const preference = window.localStorage.getItem(themeLocalStorageKey)
-
-    if (themeIsValid(preference)) {
-      themeToSet = preference
-    } else {
-      const implicitPreference = getImplicitPreference()
-
-      if (implicitPreference) {
-        themeToSet = implicitPreference
-      }
-    }
-
-    document.documentElement.setAttribute('data-theme', themeToSet)
-    setThemeState(themeToSet)
   }, [])
 
   return <ThemeContext value={{ setTheme, theme }}>{children}</ThemeContext>
