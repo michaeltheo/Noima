@@ -1,43 +1,40 @@
-import type { Metadata } from 'next'
-
-import { cn } from '@/utilities/ui'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
-import React from 'react'
+import type { Metadata, Viewport } from 'next'
 
 import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
-import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
+import { siteConfig } from '@/config/site'
+import { Footer } from '@/components/Footer'
+import { Header } from '@/components/Header'
+import { palette } from '@/styles/tokens'
+import { getServerSideURL } from '@/utilities/getURL'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { cn } from '@/utilities/ui'
+import { Hanken_Grotesk } from 'next/font/google'
 import { draftMode } from 'next/headers'
+import React from 'react'
 
 import './globals.css'
-import { getServerSideURL } from '@/utilities/getURL'
+
+const hanken = Hanken_Grotesk({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['200', '300', '400', '500', '600', '700'],
+  variable: '--font-hanken',
+  display: 'swap',
+})
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html className={cn(hanken.variable)} lang={siteConfig.locale}>
       <head>
-        <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body>
-        <Providers>
-          <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          />
-
-          <Header />
-          {children}
-          <Footer />
-        </Providers>
+      <body className="grain">
+        <AdminBar adminBarProps={{ preview: isEnabled }} />
+        <Header />
+        {children}
+        <Footer />
       </body>
     </html>
   )
@@ -45,9 +42,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
-  openGraph: mergeOpenGraph(),
-  twitter: {
-    card: 'summary_large_image',
-    creator: '@payloadcms',
+  title: {
+    default: `${siteConfig.name} — Lifestyle`,
+    template: `%s — ${siteConfig.name}`,
   },
+  description: siteConfig.description,
+  openGraph: mergeOpenGraph(),
+}
+
+export const viewport: Viewport = {
+  themeColor: palette.cream,
 }

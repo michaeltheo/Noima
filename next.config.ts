@@ -33,6 +33,8 @@ const nextConfig: NextConfig = {
           protocol: url.protocol.replace(':', '') as 'http' | 'https',
         }
       }),
+      // Placeholder imagery for the home page until the real assets are uploaded.
+      { protocol: 'https' as const, hostname: 'images.unsplash.com' },
     ],
   },
   webpack: (webpackConfig) => {

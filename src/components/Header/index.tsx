@@ -1,9 +1,12 @@
-import { HeaderClient } from './Component.client'
-import { getCachedGlobal } from '@/utilities/getGlobals'
+import { headerCta, headerNav, mobileNav } from '@/config/navigation'
 import React from 'react'
 
-export async function Header() {
-  const headerData = await getCachedGlobal('header', 1)()
+import { HeaderClient } from './HeaderClient'
 
-  return <HeaderClient data={headerData} />
+/**
+ * Server boundary for the header. Navigation is read from `@/config/navigation`
+ * for now; when the admin panel lands this is where the Payload global is fetched.
+ */
+export function Header() {
+  return <HeaderClient navItems={headerNav} cta={headerCta} mobileItems={mobileNav} />
 }

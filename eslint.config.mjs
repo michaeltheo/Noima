@@ -25,7 +25,15 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    ignores: [
+      '.next/',
+      // Generated test artifacts — gitignored, and not ours to lint.
+      'playwright-report/',
+      'test-results/',
+      'blob-report/',
+      'src/payload-types.ts',
+      'src/payload-generated-schema.ts',
+    ],
   },
   // Must stay last: turns off ESLint rules that conflict with Prettier.
   eslintConfigPrettier,

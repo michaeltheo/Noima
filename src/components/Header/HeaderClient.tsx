@@ -1,46 +1,67 @@
 'use client'
-import { useHeaderTheme } from '@/providers/HeaderTheme'
+
+import type { NavItem, NavLink } from '@/config/navigation'
+
+import { Logo } from '@/components/Logo'
+import { siteConfig } from '@/config/site'
+import { cn } from '@/utilities/ui'
+import { useScrolled } from '@/utilities/useScrolled'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import type { Header } from '@/payload-types'
+import { Burger } from './Burger'
+import { DesktopNav } from './DesktopNav'
+import { MobileMenu } from './MobileMenu'
 
-import { Logo } from '@/components/Logo/Logo'
-import { HeaderNav } from './Nav'
+const MOBILE_MENU_ID = 'mobile-menu'
 
-interface HeaderClientProps {
-  data: Header
+type HeaderClientProps = {
+  navItems: NavItem[]
+  cta: NavLink
+  mobileItems: NavLink[]
 }
 
-export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
-  /* Storing the value in a useState to avoid hydration errors */
-  const [theme, setTheme] = useState<string | null>(null)
-  const { headerTheme, setHeaderTheme } = useHeaderTheme()
+/**
+ * Fixed header. Transparent over the hero, then settles into a blurred cream
+ * bar once the page scrolls.
+ */
+export const HeaderClient: React.FC<HeaderClientProps> = ({ navItems, cta, mobileItems }) => {
+  const scrolled = useScrolled()
+  // The drawer closes from `onNavigate` on each link, so no route listener is needed.
+  const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
 
-  useEffect(() => {
-    setHeaderTheme(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
-  // Mirrors the context value into local state on purpose - see the note on
-  // `theme` above. Rendering `headerTheme` directly would change the server
-  // markup and trip hydration, so the sync is deferred to an effect.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
-
   return (
-    <header className="container relative z-20   " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
-        <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
-        </Link>
-        <HeaderNav data={data} />
-      </div>
-    </header>
+    <>
+      <header
+        className={cn(
+          'fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,backdrop-filter] duration-500 ease-noima',
+          scrolled &&
+            'border-clay-deep/15 bg-cream-warm/85 shadow-[0_10px_30px_-22px_rgba(58,51,44,0.5)] backdrop-blur-lg',
+        )}
+      >
+        <div className="mx-auto flex h-header-sm w-full max-w-(--container-site) items-center justify-between px-[clamp(24px,5vw,72px)] md:h-header">
+          <Link href="/" aria-label={`${siteConfig.name} — home`} className="relative z-50">
+            <Logo />
+          </Link>
+
+          <DesktopNav items={navItems} cta={cta} pathname={pathname} />
+
+          <Burger
+            open={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+            controls={MOBILE_MENU_ID}
+          />
+        </div>
+      </header>
+
+      <MobileMenu
+        id={MOBILE_MENU_ID}
+        items={mobileItems}
+        open={menuOpen}
+        onNavigate={() => setMenuOpen(false)}
+      />
+    </>
   )
 }
