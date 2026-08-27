@@ -6,9 +6,7 @@ export const Container: React.FC<{
   children: React.ReactNode
   className?: string
 }> = ({ children, className }) => (
-  <div
-    className={cn('mx-auto w-full max-w-(--container-site) px-[clamp(24px,5vw,72px)]', className)}
-  >
+  <div className={cn('mx-auto w-full max-w-site px-[clamp(24px,5vw,72px)]', className)}>
     {children}
   </div>
 )

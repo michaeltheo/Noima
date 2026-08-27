@@ -1,44 +1,67 @@
 import type { Block } from 'payload'
 
 /**
- * Gallery items are blocks rather than one polymorphic media array so that a
- * video carries the fields it actually needs — a poster (there is no transcode
- * step to generate one) and a playback mode — without dangling those fields on
- * every image.
+ * A gallery is a vertical stack of blocks.
+ *
+ * The image block holds *many* images so an editor can drag a whole shoot in at
+ * once and pick how it lays out, rather than adding one block per photo. Video
+ * stays its own block because it needs a poster and a playback mode.
  */
-
-const span = {
-  name: 'span',
-  type: 'select' as const,
-  defaultValue: 'full',
-  options: [
-    { label: 'Full width', value: 'full' },
-    { label: 'Half width', value: 'half' },
-    { label: 'One third', value: 'third' },
-  ],
-  admin: { description: 'How much of the row this item occupies on desktop.' },
-}
 
 const caption = {
   name: 'caption',
   type: 'text' as const,
-  admin: { description: 'Optional line shown beneath the item.' },
+  admin: { description: 'Optional line shown beneath this group.' },
 }
 
 export const GalleryImageBlock: Block = {
   slug: 'galleryImage',
   interfaceName: 'GalleryImageBlock',
-  labels: { singular: 'Image', plural: 'Images' },
+  labels: { singular: 'Images', plural: 'Image groups' },
   fields: [
     {
-      name: 'image',
+      name: 'images',
       type: 'upload',
       relationTo: 'media',
+      hasMany: true,
       required: true,
       filterOptions: { mimeType: { contains: 'image' } },
+      admin: {
+        description:
+          'Drag in as many photos as you like — they can be uploaded together. Drag to reorder.',
+      },
+    },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'columns',
+          type: 'select',
+          required: true,
+          defaultValue: '3',
+          options: [
+            { label: 'One across', value: '1' },
+            { label: 'Two across', value: '2' },
+            { label: 'Three across', value: '3' },
+          ],
+          admin: { width: '50%' },
+        },
+        {
+          name: 'aspect',
+          type: 'select',
+          required: true,
+          defaultValue: 'natural',
+          options: [
+            { label: 'Natural — keep each photo’s own shape', value: 'natural' },
+            { label: 'Square', value: 'square' },
+            { label: 'Portrait', value: 'portrait' },
+            { label: 'Landscape', value: 'landscape' },
+          ],
+          admin: { width: '50%' },
+        },
+      ],
     },
     caption,
-    span,
   ],
 }
 
@@ -77,7 +100,6 @@ export const GalleryVideoBlock: Block = {
       ],
     },
     caption,
-    span,
   ],
 }
 

@@ -1,13 +1,14 @@
 import { Container } from '@/components/primitives/Container'
 import { Logo } from '@/components/Logo'
-import { footerNav } from '@/config/navigation'
 import { siteConfig } from '@/config/site'
+import { getNavigation } from '@/data/navigation'
 import Link from 'next/link'
 import React from 'react'
 
 import { FooterNav } from './FooterNav'
 
-export function Footer() {
+export async function Footer() {
+  const { footerItems } = await getNavigation()
   const year = new Date().getFullYear()
 
   return (
@@ -17,7 +18,7 @@ export function Footer() {
           <Link href="/" aria-label={`${siteConfig.name} — home`}>
             <Logo variant="cream" className="text-[1.25rem]" />
           </Link>
-          <FooterNav items={footerNav} instagram={siteConfig.instagram} />
+          <FooterNav items={footerItems} instagram={siteConfig.instagram} />
         </div>
 
         <div className="mt-md flex flex-wrap justify-between gap-sm border-t border-cream/12 pt-sm text-meta text-cream/45">

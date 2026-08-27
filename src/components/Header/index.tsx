@@ -1,12 +1,14 @@
-import { headerCta, headerNav, mobileNav } from '@/config/navigation'
+import { getNavigation } from '@/data/navigation'
 import React from 'react'
 
 import { HeaderClient } from './HeaderClient'
 
 /**
- * Server boundary for the header. Navigation is read from `@/config/navigation`
- * for now; when the admin panel lands this is where the Payload global is fetched.
+ * Server boundary for the header. Categories come from Payload; only the fixed
+ * links (Studio, Contact) are defined in code.
  */
-export function Header() {
-  return <HeaderClient navItems={headerNav} cta={headerCta} mobileItems={mobileNav} />
+export async function Header() {
+  const { items, cta, mobileItems } = await getNavigation()
+
+  return <HeaderClient navItems={items} cta={cta} mobileItems={mobileItems} />
 }

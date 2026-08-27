@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import 'tw-animate-css';
 
 @import '../../styles/tokens.css';
 
@@ -11,21 +10,6 @@
 @custom-variant lg (@media (width >= theme(--breakpoint-lg)));
 @custom-variant xl (@media (width >= theme(--breakpoint-xl)));
 @custom-variant 2xl (@media (width >= theme(--breakpoint-2xl)));
-
-/* Blocks and shadcn primitives build class names at runtime, so they are not
-   discoverable by the Tailwind scanner. */
-@source inline("lg:col-span-4");
-@source inline("lg:col-span-6");
-@source inline("lg:col-span-8");
-@source inline("lg:col-span-12");
-@source inline("border-border");
-@source inline("bg-card");
-@source inline("border-error");
-@source inline("bg-error/30");
-@source inline("border-success");
-@source inline("bg-success/30");
-@source inline("border-warning");
-@source inline("bg-warning/30");
 
 @layer base {
   /* Headings are styled per-component via the type scale, not globally. */

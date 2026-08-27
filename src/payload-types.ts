@@ -331,15 +331,16 @@ export interface Collection {
  * via the `definition` "GalleryImageBlock".
  */
 export interface GalleryImageBlock {
-  image: number | Media;
   /**
-   * Optional line shown beneath the item.
+   * Drag in as many photos as you like — they can be uploaded together. Drag to reorder.
+   */
+  images: (number | Media)[];
+  columns: '1' | '2' | '3';
+  aspect: 'natural' | 'square' | 'portrait' | 'landscape';
+  /**
+   * Optional line shown beneath this group.
    */
   caption?: string | null;
-  /**
-   * How much of the row this item occupies on desktop.
-   */
-  span?: ('full' | 'half' | 'third') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'galleryImage';
@@ -359,13 +360,9 @@ export interface GalleryVideoBlock {
   poster: number | Media;
   playback: 'loop' | 'player';
   /**
-   * Optional line shown beneath the item.
+   * Optional line shown beneath this group.
    */
   caption?: string | null;
-  /**
-   * How much of the row this item occupies on desktop.
-   */
-  span?: ('full' | 'half' | 'third') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'galleryVideo';
@@ -536,9 +533,10 @@ export interface CollectionsSelect<T extends boolean = true> {
  * via the `definition` "GalleryImageBlock_select".
  */
 export interface GalleryImageBlockSelect<T extends boolean = true> {
-  image?: T;
+  images?: T;
+  columns?: T;
+  aspect?: T;
   caption?: T;
-  span?: T;
   id?: T;
   blockName?: T;
 }
@@ -551,7 +549,6 @@ export interface GalleryVideoBlockSelect<T extends boolean = true> {
   poster?: T;
   playback?: T;
   caption?: T;
-  span?: T;
   id?: T;
   blockName?: T;
 }
