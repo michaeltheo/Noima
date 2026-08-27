@@ -16,6 +16,7 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "ii": "cross-env NODE_OPTIONS=--no-deprecation pnpm --ignore-workspace install",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
+    "logo:variants": "node ./scripts/generate-logo-variants.mjs",
     "media:migrate": "cross-env NODE_OPTIONS=--no-deprecation payload run ./scripts/migrate-media-to-neon.ts",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation eslint . --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
