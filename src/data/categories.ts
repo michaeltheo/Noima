@@ -32,7 +32,9 @@ export const getCategories = unstable_cache(
         limit: 500,
         pagination: false,
         sort: '_order',
-        depth: 0,
+        // depth 1 populates coverImage; `gallery` comes along so the category
+        // grid can show photo and video counts without a second query.
+        depth: 1,
       }),
     ])
 

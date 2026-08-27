@@ -7,6 +7,7 @@ import { Reveal } from '@/components/primitives/Reveal'
 import RichText from '@/components/RichText'
 import { siteConfig } from '@/config/site'
 import { getCategories, getCategoryBySlug } from '@/data/categories'
+import { toSummary } from '@/data/collectionSummary'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { notFound } from 'next/navigation'
 import React from 'react'
@@ -24,23 +25,32 @@ export default async function CategoryPage({ params }: Args) {
 
   if (!category) notFound()
 
+  const summaries = category.collections.map((collection) => toSummary(collection, category.slug!))
+
   return (
     <main>
       <PageHeader
         crumbs={[{ label: siteConfig.name, href: '/' }, { label: category.title }]}
         title={category.title}
         lead={category.shortDescription}
+        aside={
+          summaries.length
+            ? `${String(summaries.length).padStart(2, '0')} ${
+                summaries.length === 1 ? 'Collection' : 'Collections'
+              }`
+            : undefined
+        }
       />
 
       {category.body && (
-        <Container>
+        <Container size="page">
           <Reveal className="mb-xl max-w-[62ch]">
             <RichText data={category.body} />
           </Reveal>
         </Container>
       )}
 
-      <CollectionGrid collections={category.collections} categorySlug={category.slug!} />
+      <CollectionGrid collections={summaries} categoryTitle={category.title} />
     </main>
   )
 }

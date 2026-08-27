@@ -12,7 +12,7 @@ import { SubHeading } from './SubHeading'
 
 export const Rental: React.FC = () => (
   <section id="rental" className="scroll-mt-header py-2xl">
-    <Container>
+    <Container size="page">
       <Reveal className="mb-xl">
         <Eyebrow>Rental</Eyebrow>
         <h2 className="mt-3 text-[clamp(2rem,4.2vw,3.2rem)] leading-[1.06] font-light tracking-[-0.03em]">

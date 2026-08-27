@@ -22,7 +22,7 @@ export const StudioGallery: React.FC<{ shots: Shot[] }> = ({ shots }) => {
 
   return (
     <section className="pb-2xl">
-      <Container>
+      <Container size="page">
         {lead && (
           <Reveal>
             <button

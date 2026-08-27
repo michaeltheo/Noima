@@ -10,7 +10,7 @@ import { StudioFacts } from './StudioFacts'
 
 export const StudioHead: React.FC = () => (
   <section className="pt-[calc(var(--spacing-header-sm)+var(--spacing-xl))] pb-lg md:pt-[calc(var(--spacing-header)+var(--spacing-2xl))] md:pb-xl">
-    <Container>
+    <Container size="page">
       <Reveal>
         <Breadcrumb items={[{ label: siteConfig.name, href: '/' }, { label: studio.title }]} />
       </Reveal>

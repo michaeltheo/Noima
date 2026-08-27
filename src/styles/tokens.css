@@ -140,7 +140,8 @@
   --spacing-4xl: 12.5rem; /* 200px */
 
   /* ---------- Layout ---------- */
-  --container-site: 85rem; /* 1360px */
+  --container-site: 85rem; /* 1360px — home */
+  --container-page: 77.5rem; /* 1240px — inner pages */
   --spacing-header: 5.25rem; /* 84px — desktop header height */
   --spacing-header-sm: 4.5rem; /* 72px — mobile header height */
 
