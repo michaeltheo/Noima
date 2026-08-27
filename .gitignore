@@ -22,3 +22,6 @@ node_modules/
 /playwright/.cache/
 
 *.tsbuildinfo
+
+# Pre-Neon copy of the uploads, kept until the database-backed serving is trusted
+.media-backup/

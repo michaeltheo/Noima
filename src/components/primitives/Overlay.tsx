@@ -2,12 +2,29 @@
 
 import { useScrollLock } from '@/utilities/useScrollLock'
 import { cn } from '@/utilities/ui'
-import React, { useEffect } from 'react'
+import React, { useEffect, useSyncExternalStore } from 'react'
+import { createPortal } from 'react-dom'
+
+/**
+ * False while rendering on the server, true once the client takes over, without
+ * the setState-in-an-effect that `react-hooks/set-state-in-effect` rejects.
+ */
+const subscribeToNothing = () => () => {}
+const onClient = () => true
+const onServer = () => false
 
 /**
  * Shared full-screen overlay behaviour: escape to dismiss, backdrop click to
  * dismiss, and a page-scroll lock while open. Stays mounted so it can animate
  * both ways; children control what sits on top of the backdrop.
+ *
+ * Rendered into `document.body` rather than in place. `position: fixed` is
+ * relative to the nearest ancestor establishing a containing block, and any
+ * non-`none` `transform`, `translate`, `scale` or `filter` establishes one —
+ * which `Reveal` sets on every element it wraps, even once revealed
+ * (`translate: 0px 0px`, `scale: 100% 100%`). An overlay rendered inside one
+ * is laid out against that box instead of the viewport, so it covers only a
+ * column of the page. Portalling puts it out of reach of whatever wraps it.
  */
 export const Overlay: React.FC<{
   open: boolean
@@ -18,6 +35,9 @@ export const Overlay: React.FC<{
   children: React.ReactNode
 }> = ({ open, onClose, label, className, children }) => {
   useScrollLock(open)
+
+  // `document` only exists in the browser, so the portal target is resolved there.
+  const mounted = useSyncExternalStore(subscribeToNothing, onClient, onServer)
 
   useEffect(() => {
     if (!open) return
@@ -30,7 +50,9 @@ export const Overlay: React.FC<{
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open, onClose])
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -46,7 +68,8 @@ export const Overlay: React.FC<{
       )}
     >
       {children}
-    </div>
+    </div>,
+    document.body,
   )
 }
 

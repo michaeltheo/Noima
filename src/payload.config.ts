@@ -30,6 +30,11 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    // `media_files` holds the upload bytes and is created by the storage
+    // adapter, not by this config. Drizzle's dev push reconciles the whole
+    // schema, so without this it offers to drop the table — and the images
+    // with it — on every boot. See `@/storage/neonMediaStorage`.
+    tablesFilter: ['!media_files'],
   }),
   collections: [Categories, Collections, Media, Users],
   cors: [getServerSideURL()].filter(Boolean),

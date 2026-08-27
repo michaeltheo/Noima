@@ -5,14 +5,11 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
-import path from 'path'
-import { fileURLToPath } from 'url'
+
+import { mediaURL } from '@/storage/neonMediaStorage'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
-
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -44,9 +41,18 @@ export const Media: CollectionConfig = {
     },
   ],
   upload: {
-    // Upload to the public/media directory in Next.js making them publicly accessible even outside of Payload
-    staticDir: path.resolve(dirname, '../../public/media'),
-    adminThumbnail: 'thumbnail',
+    // No staticDir: the cloud-storage plugin sets `disableLocalStorage` and
+    // keeps the bytes in Postgres instead. See `@/storage/neonMediaStorage`.
+    //
+    // Payload builds `thumbnailURL` from the collection slug, which would send
+    // the admin list back to /api/media/file. Resolving it by hand keeps the
+    // admin panel on the same /media route as the frontend.
+    adminThumbnail: ({ doc }) => {
+      const sizes = doc.sizes as Record<string, { filename?: string }> | undefined
+      const filename = sizes?.thumbnail?.filename ?? doc.filename
+
+      return typeof filename === 'string' ? mediaURL(filename) : null
+    },
     focalPoint: true,
     imageSizes: [
       {

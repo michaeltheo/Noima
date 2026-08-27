@@ -42,7 +42,9 @@ export const Reveal: React.FC<RevealProps> = ({
           observer.disconnect()
         }
       },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+      // No negative bottom margin: elements pinned to the bottom of the page
+      // (the footer) can never scroll clear of one, so they would never reveal.
+      { threshold: 0.12, rootMargin: '0px' },
     )
 
     observer.observe(node)
