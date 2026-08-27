@@ -16,7 +16,11 @@ const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
-  folders: true,
+  admin: {
+    // Files are uploaded from inside a Collection's gallery, so the library does
+    // not need its own sidebar entry. Remove this to browse every upload.
+    hidden: true,
+  },
   access: {
     create: authenticated,
     delete: authenticated,
