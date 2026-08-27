@@ -1,0 +1,83 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Install",
+      "type": "shell",
+      "command": "pnpm install",
+      "icon": { "id": "cloud-download", "color": "terminal.ansiBlue" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Format",
+      "type": "npm",
+      "script": "format",
+      "icon": { "id": "paintcan", "color": "terminal.ansiMagenta" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Format: check",
+      "type": "npm",
+      "script": "format:check",
+      "icon": { "id": "eye", "color": "terminal.ansiMagenta" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Lint",
+      "type": "npm",
+      "script": "lint",
+      "icon": { "id": "search-fuzzy", "color": "terminal.ansiYellow" },
+      "problemMatcher": ["$eslint-stylish"],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Lint: fix",
+      "type": "npm",
+      "script": "lint:fix",
+      "icon": { "id": "wrench", "color": "terminal.ansiYellow" },
+      "problemMatcher": ["$eslint-stylish"],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Typecheck",
+      "type": "npm",
+      "script": "typecheck",
+      "icon": { "id": "symbol-type-parameter", "color": "terminal.ansiCyan" },
+      "problemMatcher": ["$tsc"],
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Check: format + lint + types",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Format: check", "Lint", "Typecheck"],
+      "icon": { "id": "check-all", "color": "terminal.ansiGreen" },
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "Dev",
+      "type": "npm",
+      "script": "dev",
+      "icon": { "id": "rocket", "color": "terminal.ansiGreen" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "next",
+        "pattern": {
+          "regexp": "^$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*(Starting|Compiling|compiling).*",
+          "endsPattern": ".*(Ready in|Compiled|ready started server).*"
+        }
+      },
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    }
+  ]
+}
