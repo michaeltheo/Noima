@@ -43,7 +43,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ navItems, cta, mobil
       >
         <div className="mx-auto flex h-header-sm w-full max-w-(--container-site) items-center justify-between px-[clamp(24px,5vw,72px)] md:h-header">
           <Link href="/" aria-label={`${siteConfig.name} — home`} className="relative z-50">
-            <Logo />
+            <Logo priority />
           </Link>
 
           <DesktopNav items={navItems} cta={cta} pathname={pathname} />

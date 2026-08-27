@@ -53,9 +53,11 @@ export const Reveal: React.FC<RevealProps> = ({
     <Tag
       ref={observe}
       className={cn(
-        'transition-[opacity,transform,filter] duration-1000 ease-noima',
-        visible ? 'translate-y-0 opacity-100 blur-0' : 'translate-y-6 opacity-0 blur-[3px]',
-        'motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:blur-0 motion-reduce:transition-none',
+        // `translate` and `scale`, not `transform`: Tailwind v4 compiles those
+        // utilities to the standalone CSS properties of the same name.
+        'transition-[opacity,translate,scale,filter] duration-1000 ease-noima',
+        visible ? 'translate-y-0 opacity-100 blur-none' : 'translate-y-6 opacity-0 blur-[3px]',
+        'motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:blur-none motion-reduce:transition-none',
         className,
       )}
       style={{ transitionDelay: `${delay}s` }}

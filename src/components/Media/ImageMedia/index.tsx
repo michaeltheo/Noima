@@ -30,7 +30,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     loading: loadingFromProps,
   } = props
 
-  const { ref, onLoad, fadeClass } = useImageFade()
+  const { loaded, ref, onLoad, fadeClass } = useImageFade()
 
   let width: number | undefined
   let height: number | undefined
@@ -57,7 +57,17 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   const sizes = sizeFromProps ?? '100vw'
 
   return (
-    <picture className={cn(pictureClassName)}>
+    <picture
+      className={cn(
+        'block overflow-hidden',
+        // With `fill` the <img> is positioned against the nearest positioned
+        // ancestor, so the <picture> has no box of its own — give it one, or the
+        // loading sheen would have nothing to paint on.
+        fill && 'absolute inset-0',
+        !loaded && 'is-loading',
+        pictureClassName,
+      )}
+    >
       <NextImage
         ref={ref}
         onLoad={onLoad}

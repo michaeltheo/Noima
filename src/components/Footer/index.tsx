@@ -17,7 +17,7 @@ export async function Footer() {
       <Container>
         <Reveal className="flex flex-wrap items-center justify-between gap-md">
           <Link href="/" aria-label={`${siteConfig.name} — home`}>
-            <Logo variant="cream" className="text-[1.25rem]" />
+            <Logo variant="cream" className="h-[22px]" />
           </Link>
           <FooterNav items={footerItems} instagram={siteConfig.instagram} />
         </Reveal>

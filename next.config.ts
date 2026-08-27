@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         // could never match, and Next then serves the original UNOPTIMISED.
         pathname: '/media/**',
       },
+      {
+        // Brand artwork committed under public/brand.
+        pathname: '/brand/**',
+      },
     ],
     qualities: [75, 82],
     remotePatterns: [
