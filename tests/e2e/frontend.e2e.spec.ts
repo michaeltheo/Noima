@@ -8,10 +8,21 @@ test.describe('Frontend', () => {
     await expect(heading).toContainText('A quiet sense of')
   })
 
-  test('renders the three pillars', async ({ page }) => {
+  // Pillars are driven by whichever categories are flagged featuredOnHome, so
+  // assert the shape of the section rather than specific slugs or a count.
+  test('renders the pillars section with anchored cards', async ({ page }) => {
     await page.goto('http://localhost:3000')
-    for (const id of ['real-estate', 'food', 'fashion']) {
-      await expect(page.locator(`#${id}`)).toBeVisible()
+
+    const pillars = page.locator('#pillars')
+    await expect(pillars).toBeVisible()
+
+    const cards = pillars.locator('article')
+    await expect(cards.first()).toBeVisible()
+
+    // Every card needs its slug anchor — the header nav scrolls to these.
+    for (const card of await cards.all()) {
+      await expect(card).toBeVisible()
+      await expect(card).toHaveAttribute('id', /\S/)
     }
   })
 })
