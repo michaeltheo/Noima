@@ -122,6 +122,8 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * A world of the site. Each one holds collections and appears in the menu.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories".
  */
@@ -269,6 +271,8 @@ export interface Media {
   };
 }
 /**
+ * An album of work — photos and films — shown inside a category.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections".
  */
@@ -307,8 +311,25 @@ export interface Collection {
    */
   coverImage?: (number | null) | Media;
   /**
-   * Images and videos, in the order they should appear.
+   * Drop in as many photos as you like — they upload together. Drag to reorder.
    */
+  photos?: (number | Media)[] | null;
+  /**
+   * Only if this album has film. Each one needs a still to show before it plays.
+   */
+  videos?:
+    | {
+        /**
+         * MP4 (H.264) plays everywhere.
+         */
+        video: number | Media;
+        /**
+         * Shown before playback. Uploads are not transcoded, so no frame can be pulled automatically.
+         */
+        poster: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   gallery?: (GalleryImageBlock | GalleryVideoBlock)[] | null;
   meta?: {
     title?: string | null;
@@ -331,15 +352,9 @@ export interface Collection {
  * via the `definition` "GalleryImageBlock".
  */
 export interface GalleryImageBlock {
-  /**
-   * Drag in as many photos as you like — they can be uploaded together. Drag to reorder.
-   */
   images: (number | Media)[];
-  columns: '1' | '2' | '3';
-  aspect: 'natural' | 'square' | 'portrait' | 'landscape';
-  /**
-   * Optional line shown beneath this group.
-   */
+  columns?: ('1' | '2' | '3') | null;
+  aspect?: ('natural' | 'square' | 'portrait' | 'landscape') | null;
   caption?: string | null;
   id?: string | null;
   blockName?: string | null;
@@ -350,24 +365,17 @@ export interface GalleryImageBlock {
  * via the `definition` "GalleryVideoBlock".
  */
 export interface GalleryVideoBlock {
-  /**
-   * MP4 (H.264) plays everywhere. Keep it web-optimised.
-   */
   video: number | Media;
-  /**
-   * Still shown before playback. Required because uploaded video is not transcoded, so no frame can be generated automatically.
-   */
   poster: number | Media;
-  playback: 'loop' | 'player';
-  /**
-   * Optional line shown beneath this group.
-   */
+  playback?: ('loop' | 'player') | null;
   caption?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'galleryVideo';
 }
 /**
+ * People who can sign in and edit the site.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -510,6 +518,14 @@ export interface CollectionsSelect<T extends boolean = true> {
   shortDescription?: T;
   body?: T;
   coverImage?: T;
+  photos?: T;
+  videos?:
+    | T
+    | {
+        video?: T;
+        poster?: T;
+        id?: T;
+      };
   gallery?:
     | T
     | {

@@ -14,21 +14,18 @@ export type CollectionSummary = {
 }
 
 /**
- * Photo and video totals for a collection.
+ * Photo and film totals for a collection.
  *
- * Photos are counted across every image block, since one block now holds many
- * images; videos are one per video block.
+ * `legacyGallery` covers collections that have not been through
+ * `scripts/migrate-gallery.ts` yet; drop it with the legacy field.
  */
 export const galleryCounts = (collection: Collection): { photos: number; videos: number } => {
-  const blocks = collection.gallery ?? []
+  const legacy = legacyGallery(collection)
 
-  return blocks.reduce(
-    (totals, block) =>
-      block.blockType === 'galleryImage'
-        ? { ...totals, photos: totals.photos + (block.images?.length ?? 0) }
-        : { ...totals, videos: totals.videos + 1 },
-    { photos: 0, videos: 0 },
-  )
+  return {
+    photos: (collection.photos?.length ?? 0) + legacy.photos.length,
+    videos: (collection.videos?.length ?? 0) + legacy.videos.length,
+  }
 }
 
 export const toSummary = (collection: Collection, categorySlug: string): CollectionSummary => ({
@@ -44,37 +41,49 @@ export const toSummary = (collection: Collection, categorySlug: string): Collect
 const populated = (value: unknown): value is Media =>
   typeof value === 'object' && value !== null && 'url' in value
 
+/** Flattens the retired block builder into the same shape the flat fields have. */
+const legacyGallery = (
+  collection: Collection,
+): { photos: Media[]; videos: { video: Media; poster: Media }[] } => {
+  const photos: Media[] = []
+  const videos: { video: Media; poster: Media }[] = []
+
+  for (const block of collection.gallery ?? []) {
+    if (block.blockType === 'galleryImage') {
+      for (const image of block.images ?? []) if (populated(image)) photos.push(image)
+    } else if (populated(block.video) && populated(block.poster)) {
+      videos.push({ video: block.video, poster: block.poster })
+    }
+  }
+
+  return { photos, videos }
+}
+
 /**
- * Flattens the gallery blocks into a single ordered list of tiles.
+ * The ordered list of tiles for one tab of an album.
  *
- * The design renders one continuous masonry rather than a stack of separately
- * laid-out blocks, so every image across every image block is pulled into the
- * same sequence.
+ * The design renders a single continuous masonry, and photos and films live on
+ * separate tabs, so each field maps straight onto its own sequence.
  */
 export const galleryItems = (collection: Collection, type: 'photos' | 'videos'): GalleryItem[] => {
-  const blocks = collection.gallery ?? []
-  const items: GalleryItem[] = []
+  const legacy = legacyGallery(collection)
 
-  blocks.forEach((block, blockIndex) => {
-    if (type === 'photos' && block.blockType === 'galleryImage') {
-      ;(block.images ?? []).forEach((image, i) => {
-        if (populated(image)) {
-          items.push({ kind: 'photo', key: `${blockIndex}-${i}-${image.id}`, media: image })
-        }
-      })
-    }
+  if (type === 'photos') {
+    const photos = [...(collection.photos ?? []).filter(populated), ...legacy.photos]
+    return photos.map((media, i) => ({ kind: 'photo', key: `photo-${i}-${media.id}`, media }))
+  }
 
-    if (type === 'videos' && block.blockType === 'galleryVideo') {
-      if (populated(block.video) && populated(block.poster)) {
-        items.push({
-          kind: 'video',
-          key: `${blockIndex}-${block.video.id}`,
-          media: block.video,
-          poster: block.poster,
-        })
-      }
-    }
-  })
+  const videos = [
+    ...(collection.videos ?? []).flatMap(({ video, poster }) =>
+      populated(video) && populated(poster) ? [{ video, poster }] : [],
+    ),
+    ...legacy.videos,
+  ]
 
-  return items
+  return videos.map(({ video, poster }, i) => ({
+    kind: 'video',
+    key: `video-${i}-${video.id}`,
+    media: video,
+    poster,
+  }))
 }

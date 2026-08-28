@@ -31,8 +31,13 @@ export const Categories: CollectionConfig<'categories'> = {
     shortDescription: true,
   },
   admin: {
+    // Both content types sit under one "Content" heading, so the sidebar no
+    // longer nests a NOIMA "Collections" inside Payload's default group of the
+    // same name.
+    group: 'Content',
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'featuredOnHome', 'updatedAt'],
+    description: 'A world of the site. Each one holds collections and appears in the menu.',
   },
   fields: [
     {

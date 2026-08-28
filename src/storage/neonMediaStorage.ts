@@ -16,6 +16,16 @@ export type MediaRow = {
   mime_type: string
 }
 
+export type MediaMeta = Omit<MediaRow, 'data'>
+
+/**
+ * The most any single read pulls out of Postgres.
+ *
+ * A film is served a slice at a time — both to answer range requests and to
+ * keep a 100MB upload from sitting in this process's memory in one piece.
+ */
+export const MEDIA_CHUNK_SIZE = 4 * 1024 * 1024
+
 /**
  * `CREATE TABLE` is idempotent but still a round trip, so it is memoised for
  * the life of the process rather than run ahead of every read and write.
@@ -54,6 +64,43 @@ export const mediaPath = (filename: string, prefix?: string): string =>
  */
 export const mediaURL = (filename: string, prefix?: string): string =>
   `${MEDIA_URL_BASE}/${mediaPath(filename, prefix).split('/').map(encodeURIComponent).join('/')}`
+
+/** Size and type only — enough to answer a range request before reading bytes. */
+export const readMediaMeta = async (
+  payload: Payload,
+  path: string,
+): Promise<MediaMeta | undefined> => {
+  await ensureMediaTable(payload)
+
+  const { rows } = await payload.db.pool.query<MediaMeta>(
+    `SELECT mime_type, filesize FROM ${MEDIA_TABLE} WHERE path = $1`,
+    [path],
+  )
+
+  return rows[0]
+}
+
+/**
+ * One slice of a stored file.
+ *
+ * `substring` runs in Postgres, so serving the first second of a film reads a
+ * few kilobytes rather than the whole column. bytea positions are 1-indexed.
+ */
+export const readMediaBytes = async (
+  payload: Payload,
+  path: string,
+  offset: number,
+  length: number,
+): Promise<Buffer | undefined> => {
+  await ensureMediaTable(payload)
+
+  const { rows } = await payload.db.pool.query<{ data: Buffer }>(
+    `SELECT substring(data from $2 for $3) AS data FROM ${MEDIA_TABLE} WHERE path = $1`,
+    [path, offset + 1, length],
+  )
+
+  return rows[0]?.data
+}
 
 export const readMediaFile = async (
   payload: Payload,

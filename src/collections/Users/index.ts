@@ -12,8 +12,10 @@ export const Users: CollectionConfig = {
     update: authenticated,
   },
   admin: {
+    group: 'Settings',
     defaultColumns: ['name', 'email'],
     useAsTitle: 'name',
+    description: 'People who can sign in and edit the site.',
   },
   auth: true,
   fields: [

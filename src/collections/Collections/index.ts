@@ -4,7 +4,7 @@ import { slugField } from 'payload'
 
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
-import { galleryBlocks } from '@/blocks/Gallery/config'
+import { legacyGalleryField } from '@/blocks/Gallery/config'
 import { seoTab } from '@/fields/seoTab'
 import { revalidateCollection, revalidateCollectionDelete } from './hooks/revalidateCollection'
 
@@ -30,8 +30,12 @@ export const Collections: CollectionConfig<'collections'> = {
     category: true,
   },
   admin: {
+    // Groups the sidebar entry under a heading, so the nav no longer reads
+    // "Collections › Collections" — see `Categories` and `Users`.
+    group: 'Content',
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'slug', 'updatedAt'],
+    description: 'An album of work — photos and films — shown inside a category.',
   },
   fields: [
     {
@@ -78,17 +82,64 @@ export const Collections: CollectionConfig<'collections'> = {
         },
         {
           label: 'Gallery',
+          /**
+           * Two flat fields rather than a block builder.
+           *
+           * The site renders one continuous masonry and puts photos and films on
+           * separate tabs, so per-group layout never reached the page. Editors
+           * get a single drop zone instead of picking a block type per group.
+           */
           fields: [
             {
-              name: 'gallery',
-              type: 'blocks',
-              blocks: galleryBlocks,
-              labels: { singular: 'Item', plural: 'Items' },
+              name: 'photos',
+              type: 'upload',
+              relationTo: 'media',
+              hasMany: true,
+              filterOptions: { mimeType: { contains: 'image' } },
+              label: 'Photos',
               admin: {
-                initCollapsed: true,
-                description: 'Images and videos, in the order they should appear.',
+                description:
+                  'Drop in as many photos as you like — they upload together. Drag to reorder.',
               },
             },
+            {
+              name: 'videos',
+              type: 'array',
+              labels: { singular: 'Film', plural: 'Films' },
+              admin: {
+                description:
+                  'Only if this album has film. Each one needs a still to show before it plays.',
+              },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'video',
+                      type: 'upload',
+                      relationTo: 'media',
+                      required: true,
+                      filterOptions: { mimeType: { contains: 'video' } },
+                      admin: { width: '50%', description: 'MP4 (H.264) plays everywhere.' },
+                    },
+                    {
+                      name: 'poster',
+                      type: 'upload',
+                      relationTo: 'media',
+                      required: true,
+                      filterOptions: { mimeType: { contains: 'image' } },
+                      label: 'Still',
+                      admin: {
+                        width: '50%',
+                        description:
+                          'Shown before playback. Uploads are not transcoded, so no frame can be pulled automatically.',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            legacyGalleryField,
           ],
         },
         seoTab,

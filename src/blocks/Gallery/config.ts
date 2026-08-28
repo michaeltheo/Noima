@@ -1,106 +1,92 @@
-import type { Block } from 'payload'
+import type { Field } from 'payload'
 
 /**
- * A gallery is a vertical stack of blocks.
+ * The retired gallery block builder, kept only so existing rows stay readable.
  *
- * The image block holds *many* images so an editor can drag a whole shoot in at
- * once and pick how it lays out, rather than adding one block per photo. Video
- * stays its own block because it needs a poster and a playback mode.
+ * Galleries are now two flat fields on `Collections` — `photos` and `videos`.
+ * This field is hidden from the admin panel and exists purely so
+ * `scripts/migrate-gallery.ts` can copy old block rows across. Delete it, and
+ * the `collections_blocks_gallery_*` tables it owns, once every collection has
+ * been migrated.
+ *
+ * @deprecated
  */
 
-const caption = {
+const legacyCaption = {
   name: 'caption',
   type: 'text' as const,
-  admin: { description: 'Optional line shown beneath this group.' },
 }
 
-const GalleryImageBlock: Block = {
+const LegacyImageBlock = {
   slug: 'galleryImage',
   interfaceName: 'GalleryImageBlock',
   labels: { singular: 'Images', plural: 'Image groups' },
   fields: [
     {
       name: 'images',
-      type: 'upload',
-      relationTo: 'media',
+      type: 'upload' as const,
+      relationTo: 'media' as const,
       hasMany: true,
       required: true,
-      filterOptions: { mimeType: { contains: 'image' } },
-      admin: {
-        description:
-          'Drag in as many photos as you like — they can be uploaded together. Drag to reorder.',
-      },
     },
     {
-      type: 'row',
-      fields: [
-        {
-          name: 'columns',
-          type: 'select',
-          required: true,
-          defaultValue: '3',
-          options: [
-            { label: 'One across', value: '1' },
-            { label: 'Two across', value: '2' },
-            { label: 'Three across', value: '3' },
-          ],
-          admin: { width: '50%' },
-        },
-        {
-          name: 'aspect',
-          type: 'select',
-          required: true,
-          defaultValue: 'natural',
-          options: [
-            { label: 'Natural — keep each photo’s own shape', value: 'natural' },
-            { label: 'Square', value: 'square' },
-            { label: 'Portrait', value: 'portrait' },
-            { label: 'Landscape', value: 'landscape' },
-          ],
-          admin: { width: '50%' },
-        },
+      name: 'columns',
+      type: 'select' as const,
+      defaultValue: '3',
+      options: [
+        { label: 'One across', value: '1' },
+        { label: 'Two across', value: '2' },
+        { label: 'Three across', value: '3' },
       ],
     },
-    caption,
+    {
+      name: 'aspect',
+      type: 'select' as const,
+      defaultValue: 'natural',
+      options: [
+        { label: 'Natural', value: 'natural' },
+        { label: 'Square', value: 'square' },
+        { label: 'Portrait', value: 'portrait' },
+        { label: 'Landscape', value: 'landscape' },
+      ],
+    },
+    legacyCaption,
   ],
 }
 
-const GalleryVideoBlock: Block = {
+const LegacyVideoBlock = {
   slug: 'galleryVideo',
   interfaceName: 'GalleryVideoBlock',
   labels: { singular: 'Video', plural: 'Videos' },
   fields: [
     {
       name: 'video',
-      type: 'upload',
-      relationTo: 'media',
+      type: 'upload' as const,
+      relationTo: 'media' as const,
       required: true,
-      filterOptions: { mimeType: { contains: 'video' } },
-      admin: { description: 'MP4 (H.264) plays everywhere. Keep it web-optimised.' },
     },
     {
       name: 'poster',
-      type: 'upload',
-      relationTo: 'media',
+      type: 'upload' as const,
+      relationTo: 'media' as const,
       required: true,
-      filterOptions: { mimeType: { contains: 'image' } },
-      admin: {
-        description:
-          'Still shown before playback. Required because uploaded video is not transcoded, so no frame can be generated automatically.',
-      },
     },
     {
       name: 'playback',
-      type: 'select',
-      required: true,
+      type: 'select' as const,
       defaultValue: 'loop',
       options: [
-        { label: 'Silent loop — plays automatically, no controls', value: 'loop' },
-        { label: 'Player — poster, play button and sound', value: 'player' },
+        { label: 'Silent loop', value: 'loop' },
+        { label: 'Player', value: 'player' },
       ],
     },
-    caption,
+    legacyCaption,
   ],
 }
 
-export const galleryBlocks = [GalleryImageBlock, GalleryVideoBlock]
+export const legacyGalleryField: Field = {
+  name: 'gallery',
+  type: 'blocks',
+  blocks: [LegacyImageBlock, LegacyVideoBlock],
+  admin: { hidden: true },
+}
