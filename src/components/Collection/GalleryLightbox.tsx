@@ -4,6 +4,7 @@ import type { GalleryItem } from './types'
 
 import { Media } from '@/components/Media'
 import { LightboxNav } from '@/components/primitives/LightboxNav'
+import { LightboxPlate } from '@/components/primitives/LightboxPlate'
 import { Overlay, OverlayClose } from '@/components/primitives/Overlay'
 import { getMediaUrl } from '@/utilities/getMediaUrl'
 import React, { useEffect } from 'react'
@@ -36,23 +37,30 @@ export const GalleryLightbox: React.FC<{
       open={open}
       onClose={onClose}
       label="Gallery"
-      // Extra bottom padding below `lg` keeps the plate clear of the nav bar.
-      className="bg-[#241f1a]/95 p-[5vw] pb-32 lg:pb-[5vw]"
+      // Below `lg` the extra padding reserves a strip for the close button at
+      // the top and the nav bar at the bottom, so neither sits over the plate.
+      className="bg-[#241f1a]/95 p-[5vw] pt-24 pb-32 lg:pt-[5vw] lg:pb-[5vw]"
     >
       <OverlayClose
         onClick={onClose}
-        className="absolute top-7 right-8 h-12 w-12 border-cream/40 text-cream hover:bg-cream/15"
+        // Above the plate in the stack, and on its own blurred ground below
+        // `lg`, where a bare cream hairline can vanish into a pale photograph.
+        className="absolute top-5 right-5 z-10 h-12 w-12 border-cream/30 bg-ink/75 text-cream backdrop-blur-md hover:bg-cream/15 lg:top-7 lg:right-8 lg:border-cream/40 lg:bg-transparent lg:backdrop-blur-none"
       />
 
       {item?.kind === 'photo' && (
-        <div className="relative h-[70vh] w-[90vw] lg:h-[88vh]">
+        <LightboxPlate
+          onNext={() => step(1)}
+          onClose={onClose}
+          className="h-[70vh] max-h-full w-[90vw] lg:h-[88vh]"
+        >
           <Media
             resource={item.media}
             fill
             size="90vw"
             imgClassName="rounded-[4px] object-contain"
           />
-        </div>
+        </LightboxPlate>
       )}
 
       {item?.kind === 'video' && (

@@ -27,15 +27,15 @@ export const LightboxFallback: React.FC<{
 }> = ({
   label = 'Loading photograph',
   onClose,
-  plateClassName = 'h-[70vh] w-[90vw] lg:h-[86vh]',
+  plateClassName = 'h-[70vh] max-h-full w-[90vw] lg:h-[86vh]',
 }) => (
   <Overlay
     open
     onClose={onClose}
     label={label}
-    className="is-surfacing bg-[#241f1a]/95 p-[5vw] pb-32 lg:pb-[5vw]"
+    className="is-surfacing bg-[#241f1a]/95 p-[5vw] pt-24 pb-32 lg:pt-[5vw] lg:pb-[5vw]"
   >
-    <div aria-hidden className={cn(ghost, 'top-7 right-8 h-12 w-12')} />
+    <div aria-hidden className={cn(ghost, 'top-5 right-5 h-12 w-12 lg:top-7 lg:right-8')} />
     <div
       aria-hidden
       className={cn(ghost, 'top-1/2 left-7 hidden h-13.5 w-13.5 -translate-y-1/2 lg:block')}
