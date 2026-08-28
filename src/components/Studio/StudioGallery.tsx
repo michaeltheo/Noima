@@ -3,12 +3,25 @@
 import type { Shot } from '@/config/studio'
 
 import { Container } from '@/components/primitives/Container'
+import { LightboxFallback } from '@/components/primitives/LightboxFallback'
 import { Reveal } from '@/components/primitives/Reveal'
 import { cn } from '@/utilities/ui'
-import React, { useState } from 'react'
+import React, { lazy, Suspense, useState } from 'react'
 
-import { Lightbox } from './Lightbox'
 import { StudioImage } from './StudioImage'
+
+// The lightbox is dead weight for everyone who only scrolls the gallery, so its
+// code waits until a shot is actually opened. `lazy` wants a default export.
+const importLightbox = () => import('./Lightbox').then((m) => ({ default: m.Lightbox }))
+const Lightbox = lazy(importLightbox)
+
+/** Fetch the chunk on approach, so the click itself has nothing to wait for. */
+const warm = () => {
+  importLightbox().catch(() => {
+    // Ignored — React retries the import when the lightbox actually renders,
+    // and surfaces the failure there instead of as an unhandled rejection.
+  })
+}
 
 const frame =
   'group relative w-full cursor-pointer overflow-hidden rounded-[4px] bg-cream-card after:absolute after:inset-0 after:bg-espresso/0 after:transition-colors after:duration-500 after:ease-noima hover:after:bg-espresso/10'
@@ -20,17 +33,25 @@ const picture =
 
 export const StudioGallery: React.FC<{ shots: Shot[] }> = ({ shots }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  // Sticks at true after the first open so Overlay keeps its closing animation.
+  const [everOpened, setEverOpened] = useState(false)
   const [lead, ...rest] = shots
 
+  const open = (index: number) => {
+    setEverOpened(true)
+    setOpenIndex(index)
+  }
+  const close = () => setOpenIndex(null)
+
   return (
-    <section className="pb-2xl">
+    <section className="pb-2xl" onPointerEnter={warm} onFocusCapture={warm}>
       <Container size="page">
         {lead && (
           <Reveal>
             <button
               type="button"
               aria-label={`View ${lead.alt}`}
-              onClick={() => setOpenIndex(0)}
+              onClick={() => open(0)}
               className={cn(frame, 'aspect-4/3 md:aspect-16/7')}
             >
               <StudioImage
@@ -50,7 +71,7 @@ export const StudioGallery: React.FC<{ shots: Shot[] }> = ({ shots }) => {
               <button
                 type="button"
                 aria-label={`View ${shot.alt}`}
-                onClick={() => setOpenIndex(i + 1)}
+                onClick={() => open(i + 1)}
                 className={cn(frame, 'aspect-4/5')}
               >
                 <StudioImage
@@ -65,12 +86,11 @@ export const StudioGallery: React.FC<{ shots: Shot[] }> = ({ shots }) => {
         </div>
       </Container>
 
-      <Lightbox
-        shots={shots}
-        index={openIndex}
-        onChange={setOpenIndex}
-        onClose={() => setOpenIndex(null)}
-      />
+      {everOpened && (
+        <Suspense fallback={<LightboxFallback onClose={close} />}>
+          <Lightbox shots={shots} index={openIndex} onChange={setOpenIndex} onClose={close} />
+        </Suspense>
+      )}
     </section>
   )
 }

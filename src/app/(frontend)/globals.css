@@ -120,3 +120,108 @@
     }
   }
 }
+
+@layer utilities {
+  /* A lightbox's code is still arriving: a print coming up in the developer
+     tray. Clay and olive drift under near-black, the same warm bloom the page
+     body wears, inverted for the dark plate. */
+  @keyframes noima-develop {
+    0%,
+    100% {
+      background-position: 18% 40%;
+      opacity: 0.5;
+    }
+    50% {
+      background-position: 82% 60%;
+      opacity: 0.95;
+    }
+  }
+
+  .is-developing {
+    /* Matches the near-opaque backdrop the lightboxes set. */
+    background-color: #241f1a;
+    background-image:
+      radial-gradient(58% 46% at 50% 50%, rgba(192, 132, 87, 0.26), transparent 70%),
+      radial-gradient(44% 40% at 34% 62%, rgba(138, 139, 108, 0.16), transparent 72%);
+    background-size: 200% 200%;
+    background-repeat: no-repeat;
+    animation: noima-develop 3.4s var(--ease-noima) infinite;
+  }
+
+  /* The plate arrives rather than snapping in — the chunk often lands fast
+     enough that a hard cut would read as a flicker. */
+  @keyframes noima-surface {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .is-surfacing {
+    animation: noima-surface 0.45s var(--ease-noima) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .is-developing,
+    .is-surfacing {
+      animation: none;
+    }
+  }
+}
+
+@layer utilities {
+  /* The wordmark holds the screen while something is still on its way. Slow
+     enough to read as breathing rather than blinking. */
+  @keyframes noima-breathe {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.92;
+    }
+  }
+
+  .is-breathing {
+    animation: noima-breathe 2.4s var(--ease-noima) infinite;
+  }
+
+  /* The Eyebrow's hairline rule, in motion: it draws in from the left, then
+     retracts to the right rather than snapping back. */
+  @keyframes noima-trace {
+    0% {
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    48% {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    52% {
+      transform: scaleX(1);
+      transform-origin: right;
+    }
+    100% {
+      transform: scaleX(0);
+      transform-origin: right;
+    }
+  }
+
+  .is-tracing {
+    animation: noima-trace 2.4s var(--ease-noima) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .is-breathing,
+    .is-tracing {
+      animation: none;
+    }
+
+    /* Without the sweep the rule would sit at zero width and vanish. */
+    .is-tracing {
+      transform: scaleX(1);
+    }
+  }
+}
