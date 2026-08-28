@@ -88,7 +88,7 @@ export const GalleryMasonry: React.FC<{ items: GalleryItem[] }> = ({ items }) =>
             <LightboxFallback
               label="Loading media"
               onClose={close}
-              plateClassName="h-[88vh] w-[90vw]"
+              plateClassName="h-[70vh] w-[90vw] lg:h-[88vh]"
             />
           }
         >
