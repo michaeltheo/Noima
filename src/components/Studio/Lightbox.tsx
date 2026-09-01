@@ -52,6 +52,7 @@ export const Lightbox: React.FC<{
       />
       {shot && (
         <LightboxPlate
+          onPrev={() => step(-1)}
           onNext={() => step(1)}
           onClose={onClose}
           className="h-[70vh] max-h-full w-[90vw] lg:h-[86vh]"

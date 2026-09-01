@@ -50,6 +50,7 @@ export const GalleryLightbox: React.FC<{
 
       {item?.kind === 'photo' && (
         <LightboxPlate
+          onPrev={() => step(-1)}
           onNext={() => step(1)}
           onClose={onClose}
           className="h-[70vh] max-h-full w-[90vw] lg:h-[88vh]"
@@ -67,7 +68,7 @@ export const GalleryLightbox: React.FC<{
         <video
           // Remounts per item so the browser reloads the new source.
           key={item.key}
-          className="max-h-[70vh] max-w-[90vw] rounded-[4px] bg-black shadow-[0_30px_80px_rgba(0,0,0,0.4)] lg:max-h-[88vh]"
+          className="max-h-[70vh] max-w-[90vw] rounded-sm bg-black shadow-[0_30px_80px_rgba(0,0,0,0.4)] lg:max-h-[88vh]"
           poster={item.poster.url ? getMediaUrl(item.poster.url, item.poster.updatedAt) : undefined}
           controls
           autoPlay
