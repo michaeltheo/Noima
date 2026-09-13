@@ -94,8 +94,8 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   if (!result) return {}
 
   const { category, collection } = result
-  const title = collection.meta?.title || collection.title
-  const description = collection.meta?.description || collection.shortDescription || undefined
+  const title = collection.title
+  const description = collection.shortDescription || undefined
 
   return {
     title,

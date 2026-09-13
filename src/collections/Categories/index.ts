@@ -4,7 +4,6 @@ import { slugField } from 'payload'
 
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
-import { seoTab } from '@/fields/seoTab'
 import { revalidateCategory, revalidateCategoryDelete } from './hooks/revalidateCategory'
 
 /**
@@ -57,7 +56,7 @@ export const Categories: CollectionConfig<'categories'> = {
               type: 'textarea',
               admin: {
                 description:
-                  'One or two sentences. Used on the home page pillar card and as the fallback meta description.',
+                  'One or two sentences. Used on the home page pillar card and as the description search engines show.',
               },
             },
             {
@@ -92,7 +91,6 @@ export const Categories: CollectionConfig<'categories'> = {
             },
           ],
         },
-        seoTab,
       ],
     },
     slugField(),

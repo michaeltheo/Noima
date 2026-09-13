@@ -135,7 +135,7 @@ export interface Category {
    */
   title: string;
   /**
-   * One or two sentences. Used on the home page pillar card and as the fallback meta description.
+   * One or two sentences. Used on the home page pillar card and as the description search engines show.
    */
   shortDescription?: string | null;
   /**
@@ -162,14 +162,6 @@ export interface Category {
   heroImage?: (number | null) | Media;
   featuredOnHome?: boolean | null;
   showInNav?: boolean | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -331,14 +323,6 @@ export interface Collection {
       }[]
     | null;
   gallery?: (GalleryImageBlock | GalleryVideoBlock)[] | null;
-  meta?: {
-    title?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-    description?: string | null;
-  };
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -495,13 +479,6 @@ export interface CategoriesSelect<T extends boolean = true> {
   heroImage?: T;
   featuredOnHome?: T;
   showInNav?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
-      };
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
@@ -531,13 +508,6 @@ export interface CollectionsSelect<T extends boolean = true> {
     | {
         galleryImage?: T | GalleryImageBlockSelect<T>;
         galleryVideo?: T | GalleryVideoBlockSelect<T>;
-      };
-  meta?:
-    | T
-    | {
-        title?: T;
-        image?: T;
-        description?: T;
       };
   generateSlug?: T;
   slug?: T;

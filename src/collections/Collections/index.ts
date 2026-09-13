@@ -5,7 +5,6 @@ import { slugField } from 'payload'
 import { anyone } from '../../access/anyone'
 import { authenticated } from '../../access/authenticated'
 import { legacyGalleryField } from '@/blocks/Gallery/config'
-import { seoTab } from '@/fields/seoTab'
 import { revalidateCollection, revalidateCollectionDelete } from './hooks/revalidateCollection'
 
 /**
@@ -142,7 +141,6 @@ export const Collections: CollectionConfig<'collections'> = {
             legacyGalleryField,
           ],
         },
-        seoTab,
       ],
     },
     slugField(),
