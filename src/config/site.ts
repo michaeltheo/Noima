@@ -9,9 +9,9 @@ export const siteConfig = {
     'NOIMA is a curated lifestyle house — places to live, things to taste, ways to dress. One philosophy, three expressions of considered living.',
   locale: 'en',
   city: 'Thessaloniki',
-  email: 'hello@noima.gr',
+  email: 'noimajt@gmail.com',
   phone: '+30 2310 000 000',
-  instagram: 'https://instagram.com/',
+  instagram: 'https://www.instagram.com/iwannaterolli?stkn=NW1lcnBqZ2d2aG0w',
   credit: {
     label: 'mtwebstudio',
     href: 'https://www.mtwebstudio.gr/',
