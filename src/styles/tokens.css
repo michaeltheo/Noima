@@ -32,10 +32,11 @@
   --color-line-soft: rgba(58, 51, 44, 0.08);
 
   /* ---------- Typefaces ---------- */
-  /* `--font-hanken` is injected by next/font in the root layout. */
+  /* `--font-hanken` and `--font-inter` are injected by next/font in the root layout. */
   --font-display: var(--font-hanken), system-ui, sans-serif;
   --font-body: var(--font-hanken), system-ui, sans-serif;
   --font-sans: var(--font-hanken), system-ui, sans-serif;
+  --font-menu: var(--font-inter), 'Inter', system-ui, sans-serif; /* mobile menu */
 
   /* ---------- Type scale ----------
    * Named after intent, not size, so a design tweak stays in this file.

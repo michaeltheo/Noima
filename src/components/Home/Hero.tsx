@@ -1,7 +1,9 @@
 import { Container } from '@/components/primitives/Container'
+import { CtaLink } from '@/components/primitives/Cta'
 import { Eyebrow } from '@/components/primitives/Eyebrow'
 import { Reveal } from '@/components/primitives/Reveal'
 import { siteConfig } from '@/config/site'
+import { studio } from '@/config/studio'
 import React from 'react'
 
 import { HeroBackdrop } from './HeroBackdrop'
@@ -26,6 +28,16 @@ export const Hero: React.FC = () => (
 
       <Reveal delay={0.16} className="mt-xl">
         <p className="max-w-[42ch] text-body-lg text-espresso-soft">{siteConfig.description}</p>
+      </Reveal>
+
+      {/* Announces the studio rental and routes straight to it. */}
+      <Reveal delay={0.24} className="mt-lg flex flex-wrap items-center gap-x-md gap-y-sm">
+        <CtaLink href="/studio" variant="solid">
+          Book the studio
+        </CtaLink>
+        <p className="text-label uppercase text-espresso-soft">
+          {studio.title} · Now open in {siteConfig.city}
+        </p>
       </Reveal>
     </Container>
   </section>

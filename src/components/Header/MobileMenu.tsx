@@ -31,7 +31,7 @@ export const MobileMenu: React.FC<{
           href={item.href}
           onClick={onNavigate}
           tabIndex={open ? 0 : -1}
-          className="border-b border-line py-3.5 font-display text-[11vw] leading-tight tracking-[-0.02em] text-espresso last:border-b-0"
+          className="border-b border-line py-3.5 font-menu text-[11vw] leading-tight tracking-[-0.02em] text-espresso last:border-b-0"
         >
           {item.label}
         </Link>

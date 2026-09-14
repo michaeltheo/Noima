@@ -7,7 +7,7 @@ import { palette } from '@/styles/tokens'
 import { getServerSideURL } from '@/utilities/getURL'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { cn } from '@/utilities/ui'
-import { Hanken_Grotesk } from 'next/font/google'
+import { Hanken_Grotesk, Inter } from 'next/font/google'
 import React from 'react'
 
 import './globals.css'
@@ -19,9 +19,16 @@ const hanken = Hanken_Grotesk({
   display: 'swap',
 })
 
+/** Mobile menu face. Variable font, so no weights are listed. */
+const inter = Inter({
+  subsets: ['latin', 'greek'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html className={cn(hanken.variable)} lang={siteConfig.locale}>
+    <html className={cn(hanken.variable, inter.variable)} lang={siteConfig.locale}>
       <head>
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
