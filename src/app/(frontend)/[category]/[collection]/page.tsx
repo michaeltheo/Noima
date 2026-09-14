@@ -6,7 +6,7 @@ import { Container } from '@/components/primitives/Container'
 import { Reveal } from '@/components/primitives/Reveal'
 import RichText from '@/components/RichText'
 import { siteConfig } from '@/config/site'
-import { getCategories, getCollectionBySlug } from '@/data/categories'
+import { getCollectionBySlug } from '@/data/categories'
 import { galleryCounts, galleryItems } from '@/data/collectionSummary'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { notFound } from 'next/navigation'
@@ -19,16 +19,14 @@ type Args = {
   searchParams: Promise<{ type?: string }>
 }
 
-export async function generateStaticParams() {
-  const categories = await getCategories()
-
-  return categories.flatMap((category) =>
-    category.collections.map((collection) => ({
-      category: category.slug!,
-      collection: collection.slug!,
-    })),
-  )
-}
+/**
+ * `?type=` is read per request, so this page cannot be static. Declared outright
+ * rather than left to `generateStaticParams`: a build that finds no collections
+ * never renders the page, never sees `searchParams`, and marks the route static —
+ * then every album created afterwards 500s with DYNAMIC_SERVER_USAGE. The data
+ * itself is still served from the tagged `unstable_cache`.
+ */
+export const dynamic = 'force-dynamic'
 
 /** A bare URL opens on photos, unless the album only holds video. */
 const resolveType = (value: string | undefined, photos: number): GalleryType => {
