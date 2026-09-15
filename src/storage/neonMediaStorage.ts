@@ -7,8 +7,12 @@ export const MEDIA_TABLE = 'media_files'
 /** Public path the route handler in `app/(frontend)/media` answers on. */
 export const MEDIA_URL_BASE = '/media'
 
-/** Uploads are immutable — a new file gets a new name — so cache them hard. */
-export const MEDIA_CACHE_CONTROL = 'public, max-age=31536000, immutable'
+/**
+ * Uploads are immutable — a new file gets a new name — so cache them hard.
+ * `s-maxage` lets Vercel's CDN keep them too, so repeat fetches (the image
+ * optimiser pulls the same source once per width) never reach the database.
+ */
+export const MEDIA_CACHE_CONTROL = 'public, max-age=31536000, s-maxage=31536000, immutable'
 
 export type MediaRow = {
   data: Buffer

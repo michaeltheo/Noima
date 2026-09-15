@@ -29,6 +29,12 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
+      // Every Vercel function instance opens its own pool, and a gallery fans
+      // out into dozens of concurrent image requests. At pg's default of 10 per
+      // instance that burst crashed the 256MB Render database, so each instance
+      // is held to a few connections and lets idle ones go.
+      max: 3,
+      idleTimeoutMillis: 10_000,
     },
     // `media_files` holds the upload bytes and is created by the storage
     // adapter, not by this config. Drizzle's dev push reconciles the whole
