@@ -1,20 +1,33 @@
 'use client'
 
 import { Cta } from '@/components/primitives/Cta'
-import React, { useState } from 'react'
+import React, { useState, useTransition } from 'react'
 
 import { ContactField, ContactTextarea } from './ContactField'
+import { type EnquiryResult, sendEnquiry } from './sendEnquiry'
 
 /**
- * Enquiry form. Submission is a local stub until the Payload form-builder
- * endpoint exists — wire `handleSubmit` to it when the admin panel lands.
+ * Enquiry form. Sends through the `sendEnquiry` server action and clears the
+ * fields only once the email is accepted, so a failed send keeps the message.
  */
 export const ContactForm: React.FC = () => {
-  const [submitted, setSubmitted] = useState(false)
+  const [result, setResult] = useState<EnquiryResult | null>(null)
+  const [pending, startTransition] = useTransition()
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setSubmitted(true)
+    const form = event.currentTarget
+    const formData = new FormData(form)
+
+    setResult(null)
+    startTransition(async () => {
+      const response = await sendEnquiry(formData).catch((): EnquiryResult => ({
+        ok: false,
+        error: 'Could not send — please try again.',
+      }))
+      if (response.ok) form.reset()
+      setResult(response)
+    })
   }
 
   return (
@@ -28,12 +41,16 @@ export const ContactForm: React.FC = () => {
         required
       />
 
-      <Cta type="submit" className="mt-sm self-start">
-        Send enquiry
+      <Cta
+        type="submit"
+        disabled={pending}
+        className="mt-sm self-start disabled:cursor-wait disabled:opacity-60"
+      >
+        {pending ? 'Sending…' : 'Send enquiry'}
       </Cta>
 
       <p aria-live="polite" className="text-body-sm text-clay-deep">
-        {submitted ? 'Thank you — we will be in touch shortly.' : ''}
+        {result?.ok ? 'Thank you — we will be in touch shortly.' : (result?.error ?? '')}
       </p>
     </form>
   )
