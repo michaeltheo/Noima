@@ -79,8 +79,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   return buildMetadata({
     title: `${category.title} · ${greek}`,
     description: composeDescription(
-      category.shortDescription ||
-        `${category.title} by ${siteConfig.name}, ${siteConfig.city}.`,
+      category.shortDescription || `${category.title} by ${siteConfig.name}, ${siteConfig.city}.`,
       greek,
     ),
     path: `/${category.slug}`,

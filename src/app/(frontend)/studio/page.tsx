@@ -8,12 +8,7 @@ import { StudioHead } from '@/components/Studio/StudioHead'
 import { seoConfig } from '@/config/seo'
 import { siteConfig } from '@/config/site'
 import { facts, rates, shots, studio } from '@/config/studio'
-import {
-  breadcrumbJsonLd,
-  buildMetadata,
-  composeDescription,
-  studioJsonLd,
-} from '@/utilities/seo'
+import { breadcrumbJsonLd, buildMetadata, composeDescription, studioJsonLd } from '@/utilities/seo'
 import React from 'react'
 
 export default function StudioPage() {
