@@ -1,6 +1,6 @@
 'use client'
 
-import type { GalleryItem } from './types'
+import { galleryAlt, type GalleryItem } from './types'
 
 import { Media } from '@/components/Media'
 import { Container } from '@/components/primitives/Container'
@@ -28,8 +28,13 @@ const warm = () => {
  * One continuous masonry of every tile in the album — three columns, dropping
  * to two then one. Photos keep their natural proportions; videos show their
  * poster with a play badge. Any tile opens the lightbox.
+ *
+ * `title` names tiles whose upload has no alt text of its own.
  */
-export const GalleryMasonry: React.FC<{ items: GalleryItem[] }> = ({ items }) => {
+export const GalleryMasonry: React.FC<{ items: GalleryItem[]; title: string }> = ({
+  items,
+  title,
+}) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   // Sticks at true after the first open so Overlay keeps its closing animation.
   const [everOpened, setEverOpened] = useState(false)
@@ -59,10 +64,11 @@ export const GalleryMasonry: React.FC<{ items: GalleryItem[] }> = ({ items }) =>
               <button
                 type="button"
                 onClick={() => open(i)}
-                aria-label={`Open ${item.media.alt || 'item'} ${i + 1} of ${items.length}`}
+                aria-label={`Open ${item.media.alt || galleryAlt(title, item, i)}, ${i + 1} of ${items.length}`}
                 className="group relative block w-full cursor-pointer overflow-hidden rounded-[4px] bg-cream-card after:absolute after:inset-0 after:bg-espresso/0 after:transition-colors after:duration-500 after:ease-noima hover:after:bg-espresso/8"
               >
                 <Media
+                  alt={galleryAlt(title, item, i)}
                   resource={item.kind === 'photo' ? item.media : item.poster}
                   size="(max-width: 560px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   imgClassName="w-full h-auto group-hover:scale-105 motion-reduce:transform-none"
@@ -94,6 +100,7 @@ export const GalleryMasonry: React.FC<{ items: GalleryItem[] }> = ({ items }) =>
         >
           <GalleryLightbox
             items={items}
+            title={title}
             index={openIndex}
             onChange={setOpenIndex}
             onClose={close}

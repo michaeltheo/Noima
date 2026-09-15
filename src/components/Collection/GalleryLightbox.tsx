@@ -1,6 +1,6 @@
 'use client'
 
-import type { GalleryItem } from './types'
+import { galleryAlt, type GalleryItem } from './types'
 
 import { Media } from '@/components/Media'
 import { LightboxNav } from '@/components/primitives/LightboxNav'
@@ -11,10 +11,12 @@ import React, { useEffect } from 'react'
 
 export const GalleryLightbox: React.FC<{
   items: GalleryItem[]
+  /** The album's title, for alt text on uploads saved without any. */
+  title: string
   index: number | null
   onChange: (index: number) => void
   onClose: () => void
-}> = ({ items, index, onChange, onClose }) => {
+}> = ({ items, title, index, onChange, onClose }) => {
   const open = index !== null
   const step = (delta: number) => onChange(((index ?? 0) + delta + items.length) % items.length)
 
@@ -56,6 +58,7 @@ export const GalleryLightbox: React.FC<{
           className="h-[70vh] max-h-full w-[90vw] lg:h-[88vh]"
         >
           <Media
+            alt={galleryAlt(title, item, index ?? 0)}
             resource={item.media}
             fill
             size="90vw"

@@ -1,11 +1,13 @@
 import type { Metadata, Viewport } from 'next'
 
+import { seoConfig } from '@/config/seo'
 import { siteConfig } from '@/config/site'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
+import { JsonLd } from '@/components/JsonLd'
 import { palette } from '@/styles/tokens'
 import { getServerSideURL } from '@/utilities/getURL'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { composeDescription, organizationJsonLd, websiteJsonLd } from '@/utilities/seo'
 import { cn } from '@/utilities/ui'
 import { Hanken_Grotesk, Inter } from 'next/font/google'
 import React from 'react'
@@ -34,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
       <body className="grain">
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
         <Header />
         {children}
         <Footer />
@@ -42,14 +45,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   )
 }
 
+const defaultDescription = composeDescription(seoConfig.home.description, seoConfig.home.greek)
+
+/**
+ * Fallbacks for any page that sets less. Pages call `buildMetadata`, which
+ * replaces these wholesale. No canonical here: every route would inherit it,
+ * the 404 included.
+ */
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
   title: {
-    default: `${siteConfig.name} — Lifestyle`,
+    default: seoConfig.home.title,
     template: `%s — ${siteConfig.name}`,
   },
-  description: siteConfig.description,
-  openGraph: mergeOpenGraph(),
+  description: defaultDescription,
+  openGraph: {
+    type: 'website',
+    siteName: siteConfig.name,
+    locale: 'en_US',
+    title: seoConfig.home.title,
+    description: defaultDescription,
+    images: [seoConfig.defaultImage],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [seoConfig.defaultImage],
+  },
 }
 
 export const viewport: Viewport = {

@@ -21,8 +21,11 @@ export const staticNavItems: NavLink[] = [{ label: 'Studio', href: '/studio' }]
 /** The CTA pinned to the right of the desktop nav. */
 export const headerCta: NavLink = { label: 'Contact', href: '/#contact' }
 
-/** Appended after the categories in the footer. */
+/**
+ * Appended after the categories in the footer. The studio link spells out the
+ * search phrase, since link text tells search engines what the target is about.
+ */
 export const staticFooterLinks: NavLink[] = [
-  { label: 'Studio', href: '/studio' },
+  { label: 'Photography Studio, Thessaloniki', href: '/studio' },
   { label: 'Contact', href: '/#contact' },
 ]

@@ -10,8 +10,8 @@ export const siteConfig = {
   locale: 'en',
   city: 'Thessaloniki',
   email: 'noimajt@gmail.com',
-  phone: '+30 2310 000 000',
-  instagram: 'https://www.instagram.com/iwannaterolli?stkn=NW1lcnBqZ2d2aG0w',
+  phone: '+30 698 665 2141',
+  instagram: 'https://www.instagram.com/iwannaterolli',
   credit: {
     label: 'mtwebstudio',
     href: 'https://www.mtwebstudio.gr/',

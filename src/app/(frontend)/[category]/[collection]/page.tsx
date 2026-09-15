@@ -1,14 +1,27 @@
 import type { Metadata } from 'next'
 
+import type { CategoryWithCollections } from '@/data/categories'
+import type { Collection } from '@/payload-types'
+
 import { GalleryHeader } from '@/components/Collection/GalleryHeader'
 import { GalleryMasonry } from '@/components/Collection/GalleryMasonry'
+import { JsonLd } from '@/components/JsonLd'
 import { Container } from '@/components/primitives/Container'
 import { Reveal } from '@/components/primitives/Reveal'
 import RichText from '@/components/RichText'
 import { siteConfig } from '@/config/site'
 import { getCollectionBySlug } from '@/data/categories'
 import { galleryCounts, galleryItems } from '@/data/collectionSummary'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { getMediaUrl } from '@/utilities/getMediaUrl'
+import {
+  absoluteUrl,
+  breadcrumbJsonLd,
+  buildMetadata,
+  composeDescription,
+  greekFor,
+  imageGalleryJsonLd,
+  mediaImage,
+} from '@/utilities/seo'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
@@ -40,6 +53,14 @@ const countLabel = (n: number, type: GalleryType) =>
     ? `${n} ${n === 1 ? 'film' : 'films'}`
     : `${n} ${n === 1 ? 'photograph' : 'photographs'}`
 
+/** The admin's short description, or a sentence built from the titles. */
+const englishDescription = (category: CategoryWithCollections, collection: Collection) =>
+  collection.shortDescription ||
+  `${collection.title} — a ${category.title} collection by ${siteConfig.name}, ${siteConfig.city}.`
+
+const collectionPath = (category: CategoryWithCollections, collection: Collection) =>
+  `/${category.slug}/${collection.slug}`
+
 export default async function CollectionPage({ params, searchParams }: Args) {
   const { category: categorySlug, collection: collectionSlug } = await params
   const { type: typeParam } = await searchParams
@@ -55,9 +76,30 @@ export default async function CollectionPage({ params, searchParams }: Args) {
   const counts = galleryCounts(collection)
   const type = resolveType(typeParam, counts.photos)
   const items = galleryItems(collection, type)
+  const path = collectionPath(category, collection)
+
+  // Photos only: search engines index the stills, whichever tab is open.
+  const photoUrls = galleryItems(collection, 'photos').flatMap((item) =>
+    item.media.url ? [absoluteUrl(getMediaUrl(item.media.url))] : [],
+  )
 
   return (
     <main>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: siteConfig.name, path: '/' },
+            { name: category.title, path: `/${category.slug}` },
+            { name: collection.title, path },
+          ]),
+          imageGalleryJsonLd({
+            name: collection.title,
+            description: englishDescription(category, collection),
+            path,
+            images: photoUrls,
+          }),
+        ]}
+      />
       <GalleryHeader
         crumbs={[
           { label: siteConfig.name, href: '/' },
@@ -77,7 +119,7 @@ export default async function CollectionPage({ params, searchParams }: Args) {
         </Container>
       )}
 
-      <GalleryMasonry items={items} />
+      <GalleryMasonry items={items} title={collection.title} />
     </main>
   )
 }
@@ -92,16 +134,16 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   if (!result) return {}
 
   const { category, collection } = result
-  const title = collection.title
-  const description = collection.shortDescription || undefined
+  const greek = greekFor(category.slug)
+  const firstPhoto = galleryItems(collection, 'photos')[0]?.media
 
-  return {
-    title,
-    description,
-    openGraph: mergeOpenGraph({
-      title,
-      description,
-      url: `/${category.slug}/${collection.slug}`,
-    }),
-  }
+  return buildMetadata({
+    title: `${collection.title} · ${greek}`,
+    description: composeDescription(englishDescription(category, collection), greek),
+    // Always the bare URL: `?type=photos` and `?type=videos` are one page.
+    path: collectionPath(category, collection),
+    image:
+      mediaImage(collection.coverImage, collection.title) ??
+      mediaImage(firstPhoto, collection.title),
+  })
 }

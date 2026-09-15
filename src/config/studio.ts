@@ -6,10 +6,23 @@
 export const studio = {
   title: 'Photography Studio',
   lead: 'A working photography studio in Thessaloniki — a 9 m seamless backdrop wall, studio strobes and floor enough to build a set properly. For stills, portraits, lookbooks and short film.',
-  email: 'studio@noima.gr',
+  email: 'noimajt@gmail.com',
   address: ['Valaoritou 15', 'Thessaloniki 546 25'],
+  /** The same address split into the parts structured data needs. */
+  postalAddress: {
+    street: 'Valaoritou 15',
+    postalCode: '546 25',
+    locality: 'Thessaloniki',
+    country: 'GR',
+  },
   transit: 'Venizelou metro, 4 min on foot',
   coordinates: { lat: 40.6382, lon: 22.9371 },
+  /** Machine-readable twin of the "Hours" spec below. */
+  openingHours: {
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    opens: '08:00',
+    closes: '21:00',
+  },
 } as const
 
 export const mapsUrl = `https://www.openstreetmap.org/?mlat=${studio.coordinates.lat}&mlon=${studio.coordinates.lon}#map=17/${studio.coordinates.lat}/${studio.coordinates.lon}`

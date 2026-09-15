@@ -42,7 +42,9 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
 
     width = fullWidth!
     height = fullHeight!
-    alt = altFromResource || ''
+    // Alt text written in the admin wins; the caller's `alt` covers uploads
+    // that were saved without any.
+    alt = altFromResource || altFromProps || ''
 
     // No cache tag: a query string makes Next's optimizer pass the original
     // file through untouched (4x larger). Payload writes a new filename when a

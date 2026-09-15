@@ -17,7 +17,8 @@ export const StudioHead: React.FC = () => (
 
       <Reveal delay={0.06}>
         <h1 className="text-[clamp(2.6rem,6vw,4.6rem)] leading-[1.04] font-light tracking-[-0.035em]">
-          {studio.title}
+          {/* The exact phrase people search for: "photography studio in Thessaloniki". */}
+          {studio.title} in {siteConfig.city}
         </h1>
       </Reveal>
 

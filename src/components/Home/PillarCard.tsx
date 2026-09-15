@@ -20,6 +20,7 @@ export const PillarCard: React.FC<{
       >
         {category.heroImage && (
           <Media
+            alt={category.title}
             resource={category.heroImage}
             fill
             size="(max-width: 860px) 100vw, 33vw"

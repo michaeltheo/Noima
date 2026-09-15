@@ -30,6 +30,7 @@ export const CollectionCard: React.FC<{
     <div className="relative aspect-3/2 w-full overflow-hidden rounded-[4px] bg-cream-card">
       {collection.cover && (
         <Media
+          alt={collection.title}
           resource={collection.cover}
           fill
           size="(max-width: 560px) 100vw, (max-width: 1024px) 50vw, 33vw"

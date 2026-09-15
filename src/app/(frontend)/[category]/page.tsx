@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { CollectionGrid } from '@/components/Category/CollectionGrid'
+import { JsonLd } from '@/components/JsonLd'
 import { Container } from '@/components/primitives/Container'
 import { PageHeader } from '@/components/primitives/PageHeader'
 import { Reveal } from '@/components/primitives/Reveal'
@@ -8,7 +9,13 @@ import RichText from '@/components/RichText'
 import { siteConfig } from '@/config/site'
 import { getCategories, getCategoryBySlug } from '@/data/categories'
 import { toSummary } from '@/data/collectionSummary'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import {
+  breadcrumbJsonLd,
+  buildMetadata,
+  composeDescription,
+  greekFor,
+  mediaImage,
+} from '@/utilities/seo'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
@@ -29,6 +36,12 @@ export default async function CategoryPage({ params }: Args) {
 
   return (
     <main>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: siteConfig.name, path: '/' },
+          { name: category.title, path: `/${category.slug}` },
+        ])}
+      />
       <PageHeader
         crumbs={[{ label: siteConfig.name, href: '/' }, { label: category.title }]}
         title={category.title}
@@ -61,12 +74,16 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 
   if (!category) return {}
 
-  const title = category.title
-  const description = category.shortDescription || undefined
+  const greek = greekFor(category.slug)
 
-  return {
-    title,
-    description,
-    openGraph: mergeOpenGraph({ title, description, url: `/${category.slug}` }),
-  }
+  return buildMetadata({
+    title: `${category.title} · ${greek}`,
+    description: composeDescription(
+      category.shortDescription ||
+        `${category.title} by ${siteConfig.name}, ${siteConfig.city}.`,
+      greek,
+    ),
+    path: `/${category.slug}`,
+    image: mediaImage(category.heroImage, category.title),
+  })
 }

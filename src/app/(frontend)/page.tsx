@@ -4,8 +4,8 @@ import { Contact } from '@/components/Home/Contact'
 import { Hero } from '@/components/Home/Hero'
 import { Philosophy } from '@/components/Home/Philosophy'
 import { Pillars } from '@/components/Home/Pillars'
-import { siteConfig } from '@/config/site'
-import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import { seoConfig } from '@/config/seo'
+import { buildMetadata, composeDescription } from '@/utilities/seo'
 import React from 'react'
 
 export default function HomePage() {
@@ -19,11 +19,10 @@ export default function HomePage() {
   )
 }
 
-export const metadata: Metadata = {
-  title: `${siteConfig.name} — Lifestyle`,
-  description: siteConfig.description,
-  openGraph: mergeOpenGraph({
-    title: `${siteConfig.name} — Lifestyle`,
-    description: siteConfig.description,
-  }),
-}
+export const metadata: Metadata = buildMetadata({
+  // Already names the brand, so it skips the "— NOIMA" template.
+  title: seoConfig.home.title,
+  absoluteTitle: true,
+  description: composeDescription(seoConfig.home.description, seoConfig.home.greek),
+  path: '/',
+})
